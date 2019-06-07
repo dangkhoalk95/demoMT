@@ -1,0 +1,24 @@
+{
+    "env": {"SDK":"/media/hhd/github/SDK_V4.7.1"},
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/01_Include/",
+                "${workspaceFolder}/01_Source/03_Service/00_Log/",
+                "${SDK}/driver/chip/mt7687/inc",
+                "${SDK}/driver/chip/mt7687/include",
+                "${SDK}/driver/chip/inc",
+                "${SDK}/driver/CMSIS/Include/",
+                "${SDK}/driver/CMSIS/Device/MTK/mt7687/Include/"
+            ],
+            "defines": [],
+            "compilerPath": "${SDK}/tools/gcc/linux/gcc-arm-none-eabi/bin/arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

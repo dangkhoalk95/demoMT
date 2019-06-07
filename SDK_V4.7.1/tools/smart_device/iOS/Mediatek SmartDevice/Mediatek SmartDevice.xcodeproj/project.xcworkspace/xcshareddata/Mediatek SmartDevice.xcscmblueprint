@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B" : 0,
+    "E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "716E6941-E8B0-4070-B801-83A7FBA34F93",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B" : "ui\/",
+    "E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC" : "uiproject"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Mediatek SmartDevice",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Mediatek SmartDevice\/Mediatek SmartDevice.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "192.168.0.144:\/Users\/mtk54283\/git\/dogpvxp\/ui",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "192.168.0.144:\/Users\/mtk54283\/git\/uiproject",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC"
+    }
+  ]
+}

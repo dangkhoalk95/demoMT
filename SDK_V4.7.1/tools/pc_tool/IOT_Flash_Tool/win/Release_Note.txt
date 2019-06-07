@@ -1,0 +1,10 @@
+# Flash_Tool_v2.8.3
+- No Support MT2625
+- Support 82/86 Secure_Boot Feature
+- Support MT2811 (Tool_Auth, QSPI_Ext_Flash)
+
+# Flash_Tool_v2.6.2
+- Support for flash on MT2625
+
+# Flash_Tool_v2.4
+- [MT7686][MT7682][MT5932] Support 40MGZ XTAL type.

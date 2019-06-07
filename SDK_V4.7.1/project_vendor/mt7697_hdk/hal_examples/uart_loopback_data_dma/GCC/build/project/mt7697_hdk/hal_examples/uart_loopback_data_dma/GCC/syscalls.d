@@ -1,0 +1,2 @@
+/media/hhd/github/SDK_V4.7.1/project/mt7697_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7697_hdk/hal_examples/uart_loopback_data_dma/GCC/syscalls.o /media/hhd/github/SDK_V4.7.1/project/mt7697_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7697_hdk/hal_examples/uart_loopback_data_dma/GCC/syscalls.d: \
+ ../../../../../project/mt7697_hdk/hal_examples/uart_loopback_data_dma/GCC/syscalls.c

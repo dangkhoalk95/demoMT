@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>716E6941-E8B0-4070-B801-83A7FBA34F93</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Mediatek SmartDevice</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B</key>
+		<string>192.168.0.144:/Users/mtk54283/git/dogpvxp/ui</string>
+		<key>E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC</key>
+		<string>192.168.0.144:/Users/mtk54283/git/uiproject</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Mediatek SmartDevice/Mediatek SmartDevice.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B</key>
+		<string>../../..</string>
+		<key>E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC</key>
+		<string>../../..project</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>192.168.0.144:/Users/mtk54283/git/dogpvxp/ui</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>934DC5FCDE2A29F4C3ACFEDD5A80CA73F455578B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ui</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E7A08DBFEA5EC9EF5648651E45FDB60ADEE85FEC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>uiproject</string>
+		</dict>
+	</array>
+</dict>
+</plist>

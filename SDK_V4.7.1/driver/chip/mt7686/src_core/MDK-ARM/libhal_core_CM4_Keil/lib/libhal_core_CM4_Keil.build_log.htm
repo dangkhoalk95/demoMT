@@ -1,0 +1,87 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.17.0.0
+Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 1 1 1 Flex license: MDK-ARM Standard Cortex-M only: 3 user(s) (mdk_cm_std) Support: Jan 2017
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Standard Cortex-M only: 3 user(s)  Version: 5.17
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 1 (build 61)
+Assembler:       Armasm.exe V5.06 update 1 (build 61)
+Linker/Locator:  ArmLink.exe V5.06 update 1 (build 61)
+Library Manager: ArmAr.exe V5.06 update 1 (build 61)
+Hex Converter:   FromElf.exe V5.06 update 1 (build 61)
+CPU DLL:         SARMCM3.DLL V5.17
+Dialog DLL:      DCM.DLL V1.13.4.0
+Target DLL:      UL2CM3.DLL V1.156.1.0
+Dialog DLL:      TCM.DLL V1.14.6.0
+ 
+<h2>Project:</h2>
+W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\MDK-ARM\libhal_core_CM4_Keil\libhal_core_CM4_Keil.uvprojx
+Project File Date:  03/29/2017
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling hal_efuse.c...
+compiling hal_sleep_manager.c...
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(359): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_backup - give arg types
+  void deep_sleep_cmsys_backup();
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(360): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_restore - give arg types
+  void deep_sleep_cmsys_restore();
+..\..\hal_sleep_manager.c: 2 warnings, 0 errors
+compiling hal_sleep_manager_internal.c...
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(359): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_backup - give arg types
+  void deep_sleep_cmsys_backup();
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(360): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_restore - give arg types
+  void deep_sleep_cmsys_restore();
+..\..\hal_sleep_manager_internal.c(248): warning:  #1267-D: Implicit physical register R2 should be defined as a variable
+      
+_CPU_CORE_REG_BACKUP(temp_reg);
+..\..\hal_sleep_manager_internal.c(248): warning:  #1267-D: Implicit physical register R0 should be defined as a variable
+      
+_CPU_CORE_REG_BACKUP(temp_reg);
+..\..\hal_sleep_manager_internal.c(248): warning:  #1267-D: Implicit physical register R1 should be defined as a variable
+      
+_CPU_CORE_REG_BACKUP(temp_reg);
+..\..\hal_sleep_manager_internal.c(346): warning:  #1267-D: Implicit physical register R2 should be defined as a variable
+      
+_CPU_CORE_REG_RESTORE(temp_reg);
+..\..\hal_sleep_manager_internal.c(346): warning:  #1267-D: Implicit physical register R0 should be defined as a variable
+      
+_CPU_CORE_REG_RESTORE(temp_reg);
+..\..\hal_sleep_manager_internal.c(346): warning:  #1267-D: Implicit physical register R1 should be defined as a variable
+      
+_CPU_CORE_REG_RESTORE(temp_reg);
+..\..\hal_sleep_manager_internal.c(72): warning:  #550-D: variable "suspend_user_callback_func_table" was set but never used
+  static sleep_management_suspend_callback_func_t    suspend_user_callback_func_table [SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX];
+..\..\hal_sleep_manager_internal.c(73): warning:  #550-D: variable "resume_user_callback_func_table" was set but never used
+  static sleep_management_resume_callback_func_t     resume_user_callback_func_table  [SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX];
+..\..\hal_sleep_manager_internal.c: 10 warnings, 0 errors
+compiling hal_spm.c...
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(359): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_backup - give arg types
+  void deep_sleep_cmsys_backup();
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_sleep_manager_internal.h(360): warning:  #1295-D: Deprecated declaration deep_sleep_cmsys_restore - give arg types
+  void deep_sleep_cmsys_restore();
+..\..\..\..\..\..\driver\chip\mt7686\inc\hal_pmu.h(64): warning:  #1295-D: Deprecated declaration hal_pmu_enter_sleep_mode - give arg types
+  void hal_pmu_enter_sleep_mode();
+..\..\hal_spm.c(200): warning:  #191-D: type qualifier is meaningless on cast type
+      *
+PM_PCM_IM_PTR = (volatile uint32_t)spm_im;
+..\..\hal_spm.c: 4 warnings, 0 errors
+creating Library...
+".\lib\libhal_core_CM4_Keil.lib" - 0 Error(s), 16 Warning(s).
+
+<h2>Collection of Component include folders:</h2>
+  W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\MDK-ARM\libhal_core_CM4_Keil\RTE
+  C:\Keil_v5\ARM\PACK\MediaTek\MTx\4.3.0\driver\CMSIS\Device\MTK\mt7686\Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:13
+</pre>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<white-list>
+    <list>
+		<!--item jedec_id="0x[Manufactory ID][Memory type][Memory density][Reserved 00]" name="Flash Name" total_size="flash size"-->
+		<item jedec_id="0xEF401600" name="W25Q32JV" total_size="0x400000"/>
+		<item jedec_id="0xEF401500" name="W25Q16DV" total_size="0x200000"/>
+		<item jedec_id="0xEF401400" name="W25Q80DV" total_size="0x100000"/>
+		<item jedec_id="0xC2201600" name="MX25L3233F" total_size="0x400000"/>
+		<item jedec_id="0xC2201500" name="MX25L1635F" total_size="0x200000"/>
+		<item jedec_id="0xC2201400" name="MX25V8035F" total_size="0x100000"/>
+		<item jedec_id="0xC2231500" name="KH25V1635F" total_size="0x200000"/>
+		<item jedec_id="0xC8401600" name="GD25Q32CSIG" total_size="0x400000"/>
+		<item jedec_id="0xC8401500" name="GD25Q16CSIG" total_size="0x200000"/>
+		<item jedec_id="0xC8421600" name="GD25VE32C" total_size="0x200000"/>
+		<item jedec_id="0x20BA1800" name="N25Q128A" total_size="0x1000000"/>
+
+	</list>
+</white-list>

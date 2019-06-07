@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  Mediatek SmartDevice
+
+  Created by user on 14-9-17.
+  Copyright (c) 2014年 Mediatek. All rights reserved.
+*/
+"Find Device" = "Find Device";
+"Stop" = "Stop";
+"Connected" = "Connected";
+"Disconnected" = "Disconnected";
+"Connecting" = "Connecting...";
+"In range" = "In range";
+"Out of range" = "Out of range";
+"On" = "On";
+"Off" = "Off";
+"Far" = "Far";
+"Middle" = "Middle";
+"Near" = "Near";
+"MediaTek SmartDevice Alert" = "MediaTek SmartDevice Alert";
+"Cancel" = "Cancel";
+"DEVICES" = "DEVICES";
+"Tap to add device" = "Tap to add device";
+"Searching devices" = "Searching devices...\nTap to stop searching";
+"Forget device" = "Forget device ?";
+"Warning" = "Warning!";
+"Device name should not be empty" = "Device name should not be empty";
+"OK" = "OK";
+"Forget" = "Forget";
+"Cancel" = "Cancel";
+"Dismiss" = "Dismiss";

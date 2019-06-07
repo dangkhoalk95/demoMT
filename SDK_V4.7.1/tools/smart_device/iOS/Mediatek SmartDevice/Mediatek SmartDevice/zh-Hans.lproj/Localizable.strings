@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  Mediatek SmartDevice
+
+  Created by user on 14-9-17.
+  Copyright (c) 2014年 Mediatek. All rights reserved.
+*/
+"Find Device" = "查找设备";
+"Stop" = "停止";
+"Connected" = "已连接";
+"Disconnected" = "已断连";
+"Connecting" = "正在连接";
+"In range" = "进入设定区域";
+"Out of range" = "离开设定区域";
+"On" = "开";
+"Off" = "关";
+"Far" = "很远";
+"Middle" = "中等";
+"Near" = "很近";
+"MediaTek SmartDevice Alert" = "联发科智能设备宝警报";
+"Cancel" = "取消";
+"DEVICES" = "设备";
+"Tap to add device" = "点“+”来添加设备";
+"Searching devices" = "搜索设备...\n点击停止搜索";
+"Forget device" = "忽略设备?";
+"Warning" = "警告!";
+"Device name should not be empty" = "设备名不能为空";
+"OK" = "确定";
+"Forget" = "忽略设备";
+"Cancel" = "取消";
+"Dismiss" = "知道了";

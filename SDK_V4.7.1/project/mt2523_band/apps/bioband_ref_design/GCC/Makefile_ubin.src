@@ -1,0 +1,162 @@
+# Copyright Statement:
+#
+# (C) 2005-2016  MediaTek Inc. All rights reserved.
+#
+# This software/firmware and related documentation ("MediaTek Software") are
+# protected under relevant copyright laws. The information contained herein
+# is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
+# Without the prior written permission of MediaTek and/or its licensors,
+# any reproduction, modification, use or disclosure of MediaTek Software,
+# and information contained herein, in whole or in part, shall be strictly prohibited.
+# You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
+# if you have agreed to and been bound by the applicable license agreement with
+# MediaTek ("License Agreement") and been granted explicit permission to do so within
+# the License Agreement ("Permitted User").  If you are not a Permitted User,
+# please cease any access or use of MediaTek Software immediately.
+# BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+# THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
+# ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
+# WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+# NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+# SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+# SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+# THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+# THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+# CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+# SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+# STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+# CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+# AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
+# OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+# MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+#
+
+##########################################################################
+#
+# Ubin sources definition
+#
+##########################################################################
+APP_PATH = project/mt2523_band/apps/bioband_ref_design
+SOURCE_DIR = ../../../../..
+
+# include path
+CFLAGS += -I$(SOURCE_DIR)/middleware/MTK/sensor_subsys/inc
+
+# fusion algorithm libraries
+ifeq ($(FUSION_HEART_RATE_MONITOR_USE),M_INHOUSE_HEART_RATE_MONITOR)
+  ifeq ($(MTK_SENSOR_BIO_MODULE),OSRAM)
+    CFLAGS += -DOSRAM
+  endif
+  ifeq ($(MTK_SENSOR_BIO_MODULE),SOLTEAMOPTO)
+    CFLAGS += -DSOLTEAMOPTO
+  endif
+endif
+ifeq ($(FUSION_PEDOMETER_USE),M_INHOUSE_PEDOMETER)
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/pedometer/lib_core/libpedometer_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/pedometer/lib_core/libpedometer_CM4_GCC.a
+  endif
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/pedometer/inc
+endif
+
+ifeq ($(FUSION_SLEEP_TRACKER_USE),M_INHOUSE_SLEEP_TRACKER)
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/sleep_tracker/lib_core/libsleeptracker_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/sleep_tracker/lib_core/libsleeptracker_CM4_GCC.a
+  endif
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/sleep_tracker/inc
+endif
+
+ifeq ($(FUSION_HEART_RATE_MONITOR_USE),M_INHOUSE_HEART_RATE_MONITOR)
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate/lib_core/libhr_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate/lib_core/libhr_CM4_GCC.a
+  endif
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/lib_core/libppgctrl_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/lib_core/libppgctrl_CM4_GCC.a
+  endif
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate/inc
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/inc
+endif
+
+ifeq ($(FUSION_HEART_RATE_VARIABILITY_USE),M_INHOUSE_HEART_RATE_VARIABILITY)
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate_variability/lib_core/libhrv_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate_variability/lib_core/libhrv_CM4_GCC.a
+  endif
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/lib_core/libcomm_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/lib_core/libcomm_CM4_GCC.a
+  endif
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/heart_rate_variability/inc
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/inc
+endif
+
+ifeq ($(FUSION_BLOOD_PRESSURE_USE),M_INHOUSE_BLOOD_PRESSURE)
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/blood_pressure/lib_core/libbp_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/blood_pressure/lib_core/libbp_CM4_GCC.a
+  endif
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/lib_core/libppgctrl_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/lib_core/libppgctrl_CM4_GCC.a
+  endif
+  ifneq ($(wildcard $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/lib_core/libcomm_CM4_GCC.a),)
+    UBIN_LIBS += $(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/lib_core/libcomm_CM4_GCC.a
+  endif
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/blood_pressure/inc
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/ppg_control/inc
+CFLAGS += -I$(SOURCE_DIR)/prebuilt/middleware/MTK/fusion_algo/common/inc
+endif
+
+# include module setting for ppg_control library
+PPG_CONTROL_ENABLE = n
+ifeq ($(FUSION_HEART_RATE_MONITOR_USE),M_INHOUSE_HEART_RATE_MONITOR)
+    PPG_CONTROL_ENABLE = y
+endif
+ifeq ($(FUSION_BLOOD_PRESSURE_USE),M_INHOUSE_BLOOD_PRESSURE)
+    PPG_CONTROL_ENABLE = y
+endif
+
+ifeq ($(PPG_CONTROL_ENABLE),y)
+  ifeq ($(MTK_SENSOR_BIO_MODULE),EVERLIGHT)
+    UBIN_FILES += prebuilt/middleware/MTK/fusion_algo/ppg_control/module/everlight/ppg_control_module.c
+  else
+    ifeq ($(MTK_SENSOR_BIO_MODULE),SOLTEAMOPTO)
+      UBIN_FILES += prebuilt/middleware/MTK/fusion_algo/ppg_control/module/solteamopto/ppg_control_module.c
+    else
+      ifeq ($(MTK_SENSOR_BIO_MODULE),OSRAM)
+        UBIN_FILES += prebuilt/middleware/MTK/fusion_algo/ppg_control/module/osram/ppg_control_module.c
+      else
+        ifeq ($(MTK_SENSOR_BIO_MODULE),SOLTEAMOPTO_VCA003)
+          UBIN_FILES += prebuilt/middleware/MTK/fusion_algo/ppg_control/module/solteamopto_vca003/ppg_control_module.c
+        else
+          UBIN_FILES += prebuilt/middleware/MTK/fusion_algo/ppg_control/module/default/ppg_control_module.c
+        endif
+      endif
+    endif
+  endif
+endif #ifeq ($(PPG_CONTROL_ENABLE),y)
+
+# Sensor Fusion Task Support
+ifeq ($(MTK_SENSOR_SUBSYS_SINGLE_TASK),y)
+# Only sensor manager task
+else
+CFLAGS += -DSENSOR_FUSTION_TASK_ENABLED
+endif
+
+# Don't modify this part
+ifeq ($(FOTA_UBIN_DECOUPLING), 1)
+UBIN_FILES +=	$(APP_PATH)/wrapper/src/fota_jump_table.c
+UBIN_FILES += $(APP_PATH)/GCC/ustartup.c
+endif
+
+C_FILES += $(UBIN_FILES)
+S_FILES += $(UBIN_SFILES)
+LIBS += $(UBIN_LIBS)
+##########################################################################
+#
+# Ubin include path
+#
+##########################################################################
+CFLAGS += -I$(SOURCE_DIR)/$(APP_PATH)/inc
+CFLAGS += -I$(SOURCE_DIR)/kernel/service/common/include
+CLFAGS += -I$(SOURCE_DIR)/$(APP_PATH)/decoupling/template
+
+
+
+

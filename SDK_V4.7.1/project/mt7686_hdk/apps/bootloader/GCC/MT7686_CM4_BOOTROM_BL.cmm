@@ -1,0 +1,61 @@
+;*****************************************************************************
+;  Copyright Statement:
+;  --------------------
+;  This software is protected by Copyright and the information contained
+;  herein is confidential. The software may not be copied and the information
+;  contained herein may not be used or disclosed except with the written
+;  permission of MediaTek Inc. (C) 2001
+;
+;*****************************************************************************
+SYStem.RESet
+SYStem.CPU CORTEXM4
+sys.config memoryaccessport 3
+
+system.option enreset off
+system.option trst off
+SYStem.JtagClock 1MHz
+sys.o cflush on
+SYStem.Up
+
+
+setup.IMASKHLL ON
+setup.IMASKASM ON
+
+sYmbol.RESet                                ; Clear symbol table
+
+
+//[boky] disable WDT 的 command default 要關掉，要用時再開啟。假設 WDT 有 bug，每1秒就會 WDT reset，反而無法在 FPGA 上就打到這問題，雖然 WDT owner 不是我們，但會死在我們家...
+D.S SD:0xA2090000 %LE %WORD 0x0011    	    ; Disable Watch Dog Timer
+;D.S SD:0xA2090000 %LE %WORD 0x0111    	    ; Enable Watch Dog Timer
+;D.S SD:0xA2090024 %LE %WORD 0xBA91			; Trigger Watch Dog Reset
+
+// For JTAG
+D.S SD:0xA20E0094 %LE %LONG 0x76867682
+D.S SD:0xA20E0098 %LE %LONG 0x76867682
+D.S SD:0xA20E009C %LE %LONG 0x76867682
+
+; BOOTROM_FPGA
+(
+    ;D.LOAD.BINARY   .\MT7686_CM4_E1_BOOTROM_FPGA.all 0x04100000 /long
+    ;D.LOAD.ELF      .\MT7686_CM4_E1_BOOTROM_FPGA.elf /nocode
+    D.LOAD.BINARY   .\..\..\..\..\..\..\out\mt7686_hdk\bootloader\mt7686_bootloader.bin 0x4008000 /long
+    D.LOAD.ELF      .\..\..\..\..\..\..\out\mt7686_hdk\bootloader\mt7686_bootloader.elf /nocode    
+    ;R.S PC 0x04100000
+    R.S PC 0x04008000	; real target bypass BROM effect
+    y.spath .\..\..\..\driver\chip\mt7686\src
+    y.spath .\..\..\..\project\mt7686_hdk\test_loads\dvt\bootloader\GCC
+    y.spath .\..\..\..\project\mt7686_hdk\test_loads\dvt\bootloader\src     
+)
+
+
+Break.Select Program OnChip
+Break.Select Hll OnChip
+Break.Select Spot OnChip
+Break.Select Read OnChip
+Break.Select Write OnChip
+
+
+;display source listing around the current PC
+d.l
+enddo
+

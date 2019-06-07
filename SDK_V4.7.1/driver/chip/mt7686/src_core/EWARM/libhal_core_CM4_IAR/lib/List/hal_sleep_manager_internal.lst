@@ -1,0 +1,927 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V7.50.1.10123/W32 for ARM       07/Apr/2017  14:17:21
+# Copyright 1999-2015 IAR Systems AB.
+#
+#    Cpu mode     =  thumb
+#    Endian       =  little
+#    Source file  =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_sleep_manager_internal.c
+#    Command line =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_sleep_manager_internal.c
+#        -D MTK_DEBUG_LEVEL_INFO -D PRODUCT_VERSION=7686 -lcN
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List
+#        -lA
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List
+#        --diag_suppress Pa050,Ta022,Ta023 --diag_error Pe606 -o
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\Obj
+#        --no_unroll --no_inline --no_tbaa --no_scheduling --debug
+#        --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp --dlib_config
+#        "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        7.3\arm\INC\c\DLib_Config_Full.h" -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\CMSIS\Include\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\CMSIS\Device\MTK\mt7686\Include\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\..\kernel\service\inc\
+#        -I W:\Documents\2523_dev\gva\middleware\MTK\minicli\inc\ -Om -I
+#        "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        7.3\arm\CMSIS\Include\"
+#    List file    =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List\hal_sleep_manager_internal.lst
+#    Object file  =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\Obj\hal_sleep_manager_internal.o
+#
+###############################################################################
+
+W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_sleep_manager_internal.c
+      1          /* Copyright Statement:
+      2           *
+      3           * (C) 2005-2016  MediaTek Inc. All rights reserved.
+      4           *
+      5           * This software/firmware and related documentation ("MediaTek Software") are
+      6           * protected under relevant copyright laws. The information contained herein
+      7           * is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
+      8           * Without the prior written permission of MediaTek and/or its licensors,
+      9           * any reproduction, modification, use or disclosure of MediaTek Software,
+     10           * and information contained herein, in whole or in part, shall be strictly prohibited.
+     11           * You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
+     12           * if you have agreed to and been bound by the applicable license agreement with
+     13           * MediaTek ("License Agreement") and been granted explicit permission to do so within
+     14           * the License Agreement ("Permitted User").  If you are not a Permitted User,
+     15           * please cease any access or use of MediaTek Software immediately.
+     16           * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+     17           * THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
+     18           * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
+     19           * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+     20           * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+     21           * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+     22           * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+     23           * SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+     24           * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+     25           * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+     26           * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+     27           * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+     28           * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+     29           * CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+     30           * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
+     31           * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+     32           * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+     33           */
+     34          
+     35          #include "hal_sleep_manager.h"
+     36          #include "hal_sleep_manager_internal.h"
+     37          #include <stdlib.h>
+     38          #include <stdio.h>
+     39          #include <string.h>
+     40          
+     41          #ifdef HAL_SLEEP_MANAGER_ENABLED
+     42          #include <stdio.h>
+     43          #include <string.h>
+     44          #include "hal_log.h"
+     45          #include "memory_attribute.h"
+     46          #include "hal_nvic.h"
+     47          #include "hal_nvic_internal.h"
+     48          #include "assert.h"
+     49          #include "hal_emi_internal.h"
+     50          #include "hal_cache_internal.h"
+     51          #include "hal_flash_sf.h"
+     52          #include "hal_clock_internal.h"
+     53          #include "hal_gpt.h"
+     54          #include "hal_mpu_internal.h"
+     55          #include "hal_clock.h"
+     56          #include "hal_sleep_manager_retention.h"
+     57          
+     58          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+     59          #define log_debug(_message,...) printf(_message, ##__VA_ARGS__)
+     60          #else
+     61          #define log_debug(_message,...)
+     62          #endif
+     63          
+     64          static sleep_management_handle_t sleep_management_handle = {
+     65              .lock_sleep_request = 0,
+     66              .user_handle_resoure = 0,
+     67              .user_handle_count = 0
+     68          };
+     69          
+     70          static sleep_management_suspend_callback_func_t    suspend_callback_func_table      [SLEEP_BACKUP_RESTORE_MODULE_MAX];
+     71          static sleep_management_resume_callback_func_t     resume_callback_func_table       [SLEEP_BACKUP_RESTORE_MODULE_MAX];
+     72          static sleep_management_suspend_callback_func_t    suspend_user_callback_func_table [SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX];
+     73          static sleep_management_resume_callback_func_t     resume_user_callback_func_table  [SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX];
+     74          static uint32_t suspend_user_register_count = 0, resume_user_register_count = 0;
+     75          
+     76          ATTR_RWDATA_IN_TCM volatile uint32_t wakeup_source_status;
+     77          ATTR_RWDATA_IN_TCM volatile uint32_t Vector0_backup, temp_reg;
+     78          ATTR_RWDATA_IN_TCM volatile uint32_t origin_msp_bak_reg, origin_psp_bak_reg, backup_return_address;
+     79          ATTR_RWDATA_IN_TCM volatile CPU_CORE_BAKEUP_REG_T  cpu_core_reg ;
+     80          ATTR_RWDATA_IN_TCM volatile nvic_sleep_backup_register_t nvic_backup_register;
+     81          ATTR_RWDATA_IN_TCM volatile FPU_BAKEUP_REG_T  fpu_reg;
+     82          ATTR_RWDATA_IN_TCM volatile CMSYS_CFG_BAKEUP_REG_T  cmsys_cfg_reg;
+     83          ATTR_RWDATA_IN_TCM volatile CMSYS_CFG_EXT_BAKEUP_REG_T cmsys_cfg_ext_reg;
+     84          ATTR_RWDATA_IN_TCM volatile CM4_SYS_CTRL_BAKEUP_REG_T  cm4_sys_ctrl_reg ;
+     85          uint32_t cli_dtim_sleep_mode = 0;
+     86          
+     87          /* for N9 API */
+     88          int8_t (*ptr_lp_connsys_get_own_enable_int)(void)  = NULL;
+     89          int8_t (*ptr_lp_connsys_give_n9_own)(void)         = NULL;
+     90          uint8_t (*ptr_connsys_get_ownership)(void)          = NULL;
+     91          
+     92          #if     defined (__GNUC__)      //GCC disable compiler optimize
+     93          #pragma GCC push_options
+     94          #pragma GCC optimize ("O0")
+     95          #elif   defined (__ICCARM__)    //IAR disable compiler optimize
+     96          #pragma optimize=none
+     97          #elif   defined (__CC_ARM)      //MDK disable compiler optimize
+     98          #pragma push
+     99          #pragma diag_suppress 1267
+    100          #pragma O0
+    101          #endif
+    102          ATTR_TEXT_IN_TCM void sleep_management_enter_deep_sleep(hal_sleep_mode_t mode)
+    103          {
+    104          #if defined (__CC_ARM)
+    105              /* Backup function return address(R14) */
+    106              __asm volatile("mov backup_return_address,__return_address() \n");
+    107          #endif
+    108          
+    109          #ifdef SLEEP_MANAGEMENT_DEBUG_ENABLE
+    110              if ((*SPM_PWR_STATUS & 0x4) == 0) {
+    111                  log_debug("[Sleep]MTCMOS CONN:Off\r\n");
+    112              } else {
+    113                  log_debug("[Sleep]MTCMOS CONN:On\r\n");
+    114              }
+    115              if ((*SPM_PWR_STATUS & 0x8) == 0) {
+    116                  log_debug("[Sleep]MTCMOS SDIO:Off\r\n");
+    117              } else {
+    118                  log_debug("[Sleep]MTCMOS SDIO:On\r\n");
+    119              }
+    120              log_debug("[Sleep]Enter Deep Sleep\r\n");
+    121          #endif
+    122          
+    123              clock_suspend();
+    124          
+    125              /* Set Boot Slave */
+    126              *CMCFG_BOOT_FROM_SLV = 0x1;
+    127          
+    128              /* peripheral driver backup callback function */
+    129              sleep_management_suspend_callback();
+    130          
+    131              /* spm Kick start*/
+    132              spm_kick_start();
+    133          
+    134              /* enable spm irq and clear pending bits */
+    135              NVIC_EnableIRQ(SPM_IRQn);
+    136              NVIC_ClearPendingIRQ(SPM_IRQn);
+    137          
+    138              /* backup cmsys register */
+    139              deep_sleep_cmsys_backup();
+    140          
+    141              /* general register backup */
+    142              __CUP_STACK_POINT_BACKUP(origin_psp_bak_reg, origin_msp_bak_reg);
+    143          
+    144              /* Set CM4 SLEEPDEEP bits */
+    145              *CM4_SYSTEM_CONTROL = *CM4_SYSTEM_CONTROL | 0x4;
+    146          
+    147              /* Flash Enter Powerdown Mode */
+    148          #ifdef HAL_FLASH_MODULE_ENABLED
+    149              SF_DAL_DEV_Enter_DPD();
+    150          #endif
+    151              /* PSRAM Enter Sleep Mode */
+    152              mtk_psram_half_sleep_enter();
+    153          
+    154              /* backup BootVector0 Stack Address */
+    155              Vector0_backup = *CMCFG_BOOT_VECTOR0;   //boot vector 0(boot slave stack point)
+    156          
+    157              /* backup MSP Address */
+    158          #if (defined (__GNUC__) || defined (__ICCARM__))
+    159              __asm volatile("push {r0-r12, lr}");
+    160              __asm volatile("mov %0, sp" : "=r"(temp_reg));
+    161          #elif defined (__CC_ARM)
+    162              __PUSH_CUP_REG();
+    163              __BACKUP_SP(temp_reg);
+    164          #endif
+    165              *CMCFG_BOOT_VECTOR0 = temp_reg;  //VECTOR0 write MSP Address
+    166          
+    167              if (*SPM_SLEEP_ISR_STATUS == 1) {
+    168                  *SPM_PCM_CON0 = *SPM_PCM_CON0 & 0x1E; // [0]: kick PCM process
+    169                  *SPM_SLEEP_ISR_STATUS = 1;
+    170                  *SPM_SLEEP_ISR_STATUS = 0;
+    171              } else {
+    172                  /* Enter Deep Sleep */
+    173                  temp_reg = CMCFG_BOOT_VECTOR1;  //CMCFG_BOOT_VECTOR1 Address
+    174                  __ENTER_DEEP_SLEEP(temp_reg);
+    175              }
+    176              /* pop CPU Reg R0-R12 */
+    177          #if defined (__CC_ARM)
+    178              __POP_CUP_REG();
+    179          #endif
+    180          
+    181              /* wait protect_en release */
+    182              while (((*(volatile uint32_t *)(0xA21F0010)) & 0x1000100) != 0);
+    183              /* add 2us delay for protect_en ready (40Mhz Xtal) */
+    184              hal_gpt_delay_us(2);
+    185          
+    186              /* PSRAM Leave Sleep Mode */
+    187              mtk_psram_half_sleep_exit();
+    188          
+    189              /* Flash Leave Powerdown Mode */
+    190          #ifdef HAL_FLASH_MODULE_ENABLED
+    191              SF_DAL_DEV_Leave_DPD();
+    192          #endif
+    193              /* get wakeup source */
+    194              wakeup_source_status = *SPM_WAKEUP_SOURCE_STA;
+    195          
+    196              /* restore MSP */
+    197              temp_reg = (unsigned int)&origin_msp_bak_reg;
+    198              __MSP_RESTORE(temp_reg);
+    199          
+    200              /* swtich stack point to psp */
+    201              __SWITCH_TO_PSP_STACK_POINT();
+    202          
+    203              /* restore PSP */
+    204              temp_reg = (unsigned int)&origin_psp_bak_reg;
+    205              __PSP_RESTORE(temp_reg);
+    206          
+    207              /* restore Core register - CONTROL */
+    208              temp_reg = (unsigned int)&cpu_core_reg.CONTROL;
+    209              __CPU_CORE_CONTROL_REG_RESTORE(temp_reg);
+    210          
+    211              /* restore boot Vector */
+    212              *CMCFG_BOOT_FROM_SLV = 0x0;
+    213              *CMCFG_BOOT_VECTOR0 = Vector0_backup ;
+    214          
+    215              /* Clear CM4 Deep Sleep bits */
+    216              *CM4_SYSTEM_CONTROL = *CM4_SYSTEM_CONTROL & (~0x4);
+    217          
+    218              /* restore cmsys register */
+    219              deep_sleep_cmsys_restore();
+    220          
+    221              /* disable spm irq and clear pending bits */
+    222              NVIC_DisableIRQ(SPM_IRQn);
+    223              NVIC_ClearPendingIRQ(SPM_IRQn);
+    224          
+    225              clock_resume();
+    226          
+    227              /* peripheral driver restore callback function */
+    228              sleep_management_resume_callback();
+    229          
+    230              /* disable spm clock*/
+    231              hal_clock_disable(HAL_CLOCK_CG_SW_SPM);
+    232          
+    233          #if defined (__CC_ARM)
+    234              __RESTORE_LR(backup_return_address);
+    235          #endif
+    236          }
+    237          #if     defined (__GNUC__)
+    238          #pragma GCC push_options
+    239          #elif   defined (__CC_ARM)
+    240          #pragma pop
+    241          #endif
+    242          
+    243          ATTR_TEXT_IN_TCM inline void deep_sleep_cmsys_backup()
+    244          {
+    245              uint32_t i;
+    246              /* backup CPU core registers */
+    247              temp_reg = (unsigned int)&cpu_core_reg;
+    248              __CPU_CORE_REG_BACKUP(temp_reg);
+    249          
+    250              /* NVIC backup */
+    251              nvic_backup_register.nvic_iser = NVIC->ISER[0];
+    252              nvic_backup_register.nvic_iser1 = NVIC->ISER[1];
+    253              for (i = 0; i < SAVE_PRIORITY_GROUP; i++) {
+    254                  nvic_backup_register.nvic_ip[i] = NVIC->IP[i];
+    255              }
+    256          
+    257              /* cache backcp */
+    258          #ifdef HAL_CACHE_MODULE_ENABLED
+    259              cache_status_save();
+    260          #endif
+    261          
+    262              /* mpu backcp */
+    263          #ifdef HAL_MPU_MODULE_ENABLED
+    264              mpu_status_save();
+    265          #endif
+    266          
+    267              /* cmsys config backup */
+    268              cmsys_cfg_reg.STCALIB = CMSYS_CFG->STCALIB;
+    269              cmsys_cfg_reg.AHB_BUFFERALBE = CMSYS_CFG->AHB_BUFFERALBE;
+    270              cmsys_cfg_reg.AHB_FIFO_TH = CMSYS_CFG->AHB_FIFO_TH;
+    271              cmsys_cfg_reg.INT_ACTIVE_HL0 = CMSYS_CFG->INT_ACTIVE_HL0;
+    272              cmsys_cfg_reg.INT_ACTIVE_HL1 = CMSYS_CFG->INT_ACTIVE_HL1;
+    273              cmsys_cfg_reg.DCM_CTRL_REG = CMSYS_CFG->DCM_CTRL_REG;
+    274          
+    275              cmsys_cfg_ext_reg.CG_EN = CMSYS_CFG_EXT->CG_EN;
+    276              cmsys_cfg_ext_reg.DCM_EN = CMSYS_CFG_EXT->DCM_EN;
+    277          
+    278              /* fpu backup */
+    279              fpu_reg.FPCCR = FPU->FPCCR;
+    280              fpu_reg.FPCAR = FPU->FPCAR;
+    281          
+    282              /* CM4 system control registers backup */
+    283              cm4_sys_ctrl_reg.ACTLR = SCnSCB->ACTLR;
+    284              cm4_sys_ctrl_reg.VTOR = SCB->VTOR;
+    285              cm4_sys_ctrl_reg.SCR = SCB->SCR;
+    286              cm4_sys_ctrl_reg.CCR = SCB->CCR;
+    287          
+    288              cm4_sys_ctrl_reg.SHP[0] = SCB->SHP[0]; /* MemMange */
+    289              cm4_sys_ctrl_reg.SHP[1] = SCB->SHP[1]; /* BusFault */
+    290              cm4_sys_ctrl_reg.SHP[2] = SCB->SHP[2]; /* UsageFault */
+    291              cm4_sys_ctrl_reg.SHP[7] = SCB->SHP[7]; /* SVCall */
+    292              cm4_sys_ctrl_reg.SHP[8] = SCB->SHP[8]; /* DebugMonitor */
+    293              cm4_sys_ctrl_reg.SHP[10] = SCB->SHP[10]; /* PendSV */
+    294              cm4_sys_ctrl_reg.SHP[11] = SCB->SHP[11]; /* SysTick */
+    295          
+    296              cm4_sys_ctrl_reg.SHCSR = SCB->SHCSR;
+    297              cm4_sys_ctrl_reg.CPACR = SCB->CPACR;
+    298          }
+    299          
+    300          ATTR_TEXT_IN_TCM inline void deep_sleep_cmsys_restore()
+    301          {
+    302              uint32_t i;
+    303          
+    304              /* CM4 system control registers restore */
+    305              SCnSCB->ACTLR = cm4_sys_ctrl_reg.ACTLR;
+    306              SCB->VTOR = cm4_sys_ctrl_reg.VTOR;
+    307              SCB->SCR = cm4_sys_ctrl_reg.SCR;
+    308              SCB->CCR = cm4_sys_ctrl_reg.CCR;
+    309              SCB->SHP[0] = cm4_sys_ctrl_reg.SHP[0]; /* MemMange */
+    310              SCB->SHP[1] = cm4_sys_ctrl_reg.SHP[1]; /* BusFault */
+    311              SCB->SHP[2] = cm4_sys_ctrl_reg.SHP[2]; /* UsageFault */
+    312              SCB->SHP[7] = cm4_sys_ctrl_reg.SHP[7]; /* SVCall */
+    313              SCB->SHP[8] = cm4_sys_ctrl_reg.SHP[8]; /* DebugMonitor */
+    314              SCB->SHP[10] = cm4_sys_ctrl_reg.SHP[10]; /* PendSV */
+    315              SCB->SHP[11] = cm4_sys_ctrl_reg.SHP[11]; /* SysTick */
+    316              SCB->SHCSR = cm4_sys_ctrl_reg.SHCSR;
+    317              SCB->CPACR = cm4_sys_ctrl_reg.CPACR;
+    318          
+    319              /* fpu restore */
+    320              FPU->FPCCR = fpu_reg.FPCCR;
+    321              FPU->FPCAR = fpu_reg.FPCAR;
+    322          
+    323              /* cmsys config restore */
+    324              CMSYS_CFG->STCALIB = cmsys_cfg_reg.STCALIB;
+    325              CMSYS_CFG->AHB_BUFFERALBE = cmsys_cfg_reg.AHB_BUFFERALBE;
+    326              CMSYS_CFG->AHB_FIFO_TH = cmsys_cfg_reg.AHB_FIFO_TH;
+    327              CMSYS_CFG->INT_ACTIVE_HL0 = cmsys_cfg_reg.INT_ACTIVE_HL0;
+    328              CMSYS_CFG->INT_ACTIVE_HL1 = cmsys_cfg_reg.INT_ACTIVE_HL1;
+    329              CMSYS_CFG->DCM_CTRL_REG = cmsys_cfg_reg.DCM_CTRL_REG;
+    330          
+    331              CMSYS_CFG_EXT->CG_EN = cmsys_cfg_ext_reg.CG_EN;
+    332              CMSYS_CFG_EXT->DCM_EN = cmsys_cfg_ext_reg.DCM_EN;
+    333          
+    334              /* mpu restore */
+    335          #ifdef HAL_MPU_MODULE_ENABLED
+    336              mpu_status_restore();
+    337          #endif
+    338          
+    339              /* cache restore */
+    340          #ifdef HAL_CACHE_MODULE_ENABLED
+    341              cache_status_restore();
+    342          #endif
+    343          
+    344              /* restore CPU core registers */
+    345              temp_reg = (unsigned int)&cpu_core_reg;
+    346              __CPU_CORE_REG_RESTORE(temp_reg);
+    347          
+    348              /* NVIC restore */
+    349              NVIC->ISER[0] = nvic_backup_register.nvic_iser;
+    350              NVIC->ISER[1] = nvic_backup_register.nvic_iser1;
+    351              for (i = 0; i < SAVE_PRIORITY_GROUP; i++) {
+    352                  NVIC->IP[i] = nvic_backup_register.nvic_ip[i];
+    353              }
+    354          }
+    355          
+    356          void sleep_management_register_suspend_callback(sleep_management_backup_restore_module_t module , sleep_management_suspend_callback_t callback , void *data)
+    357          {
+    358              if (module == SLEEP_BACKUP_RESTORE_USER) {
+    359                  if (suspend_user_register_count < SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX) {
+    360                      suspend_user_register_count++;
+    361                      suspend_user_callback_func_table[module].func        = callback;
+    362                      suspend_user_callback_func_table[module].data        = data;
+    363                      suspend_user_callback_func_table[module].init_status = SLEEP_MANAGEMENT_INITIALIZED;
+    364                  } else {
+    365                      log_hal_error("[Sleep Management]register suspend callback function overflow\r\n");
+    366                      assert(0);
+    367                  }
+    368              } else {
+    369                  suspend_callback_func_table[module].func        = callback;
+    370                  suspend_callback_func_table[module].data        = data;
+    371                  suspend_callback_func_table[module].init_status = SLEEP_MANAGEMENT_INITIALIZED;
+    372              }
+    373          }
+    374          
+    375          void sleep_management_register_resume_callback(sleep_management_backup_restore_module_t module , sleep_management_resume_callback_t callback , void *data)
+    376          {
+    377              if (module == SLEEP_BACKUP_RESTORE_USER) {
+    378                  if (resume_user_register_count < SLEEP_BACKUP_RESTORE_USER_CALLBACK_FUNC_MAX) {
+    379                      resume_user_register_count++;
+    380                      resume_user_callback_func_table[module].func        = callback;
+    381                      resume_user_callback_func_table[module].data        = data;
+    382                      resume_user_callback_func_table[module].init_status = SLEEP_MANAGEMENT_INITIALIZED;
+    383                  } else {
+    384                      log_hal_error("[Sleep Management]register resume callback function overflow\r\n");
+    385                      assert(0);
+    386                  }
+    387              } else {
+    388                  resume_callback_func_table[module].func = callback;
+    389                  resume_callback_func_table[module].data = data;
+    390                  resume_callback_func_table[module].init_status = SLEEP_MANAGEMENT_INITIALIZED;
+    391              }
+    392          }
+    393          
+    394          ATTR_TEXT_IN_TCM void sleep_management_suspend_callback()
+    395          {
+    396              static uint32_t i;
+    397          
+    398              for (i = 0; i < SLEEP_BACKUP_RESTORE_MODULE_MAX; i++) {
+    399                  if (suspend_callback_func_table[i].init_status == SLEEP_MANAGEMENT_INITIALIZED) {
+    400          
+    401          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    402                      sleep_management_debug_backup_restore_fun_timelog(0, 0, i);
+    403          #endif
+    404                      suspend_callback_func_table[i].func(suspend_callback_func_table[i].data);
+    405          
+    406          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    407                      sleep_management_debug_backup_restore_fun_timelog(0, 1, i);
+    408          #endif
+    409                  }
+    410              }
+    411          }
+    412          
+    413          
+    414          ATTR_TEXT_IN_TCM void sleep_management_resume_callback()
+    415          {
+    416              static uint32_t i;
+    417          
+    418              for (i = 0; i < SLEEP_BACKUP_RESTORE_MODULE_MAX; i++) {
+    419                  if (resume_callback_func_table[i].init_status == SLEEP_MANAGEMENT_INITIALIZED) {
+    420          
+    421          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    422                      sleep_management_debug_backup_restore_fun_timelog(1, 0, i);
+    423          #endif
+    424          
+    425                      resume_callback_func_table[i].func(resume_callback_func_table[i].data);
+    426          
+    427          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    428                      sleep_management_debug_backup_restore_fun_timelog(1, 1, i);
+    429          #endif
+    430                  }
+    431              }
+    432          }
+    433          
+    434          uint8_t sleep_management_get_lock_handle(const char *handle_name)
+    435          {
+    436              uint8_t index = 0, i;
+    437              uint32_t mask, name_len;
+    438          
+    439              mask = save_and_set_interrupt_mask();
+    440              for (index = 0 ; index < SLEEP_LOCK_HANDLE_USER_MAX; index++) {
+    441                  if (((sleep_management_handle.user_handle_resoure >> index) & 0x01) == 0) {
+    442                      sleep_management_handle.user_handle_resoure |= (1 << index);
+    443                      sleep_management_handle.user_handle_count++;
+    444          
+    445                      memset(&sleep_management_handle.user_handle_name[index][0], 0, SLEEP_HANDLE_NAME_LEN);
+    446                      name_len = strlen(handle_name);
+    447          
+    448                      if (name_len >= SLEEP_HANDLE_NAME_LEN) {
+    449                          name_len = SLEEP_HANDLE_NAME_LEN - 1;
+    450                      }
+    451                      memcpy(&sleep_management_handle.user_handle_name[index][0], handle_name, name_len);
+    452          
+    453                      /* Check handle name */
+    454                      if (name_len == 0) {
+    455                          log_hal_error("[Sleep Management]sleep handle name error\r\n");
+    456                          assert(0);
+    457                      }
+    458                      for (i = 0; i < name_len; i++) {
+    459                          if ((sleep_management_handle.user_handle_name[index][i] <= 0x20) || (sleep_management_handle.user_handle_name[index][i] >= 0x7E)) {
+    460                              log_hal_error("[Sleep Management]sleep handle name error\r\n");
+    461                              assert(0);
+    462                          }
+    463                      }
+    464                      break;
+    465                  }
+    466              }
+    467              restore_interrupt_mask(mask);
+    468              log_hal_error("[Sleep Management]sleep handle name : %s\r\n", &sleep_management_handle.user_handle_name[index][0]);
+    469              if (index >= SLEEP_LOCK_HANDLE_USER_MAX) {
+    470                  log_hal_error("[Sleep Management]cannot get sleep handle\r\n");
+    471                  assert(0);
+    472                  return (SLEEP_LOCK_INVALID_ID);
+    473              }
+    474          
+    475              index += SLEEP_LOCK_USER_START_ID;
+    476          
+    477              return (index);
+    478          }
+    479          
+    480          void sleep_management_release_lock_handle(uint8_t handle_index)
+    481          {
+    482              uint32_t mask;
+    483              /*  check handle index range */
+    484              if ((handle_index >= SLEEP_LOCK_HANDLE_MAX) || (handle_index < SLEEP_LOCK_USER_START_ID)) {
+    485                  log_hal_error("[Sleep Management]sleep handle index error\r\n");
+    486                  return;
+    487              }
+    488          
+    489              handle_index -= SLEEP_LOCK_USER_START_ID;
+    490          
+    491              mask = save_and_set_interrupt_mask();
+    492              if (((sleep_management_handle.user_handle_resoure >> handle_index) & 0x01) == 1) {
+    493                  sleep_management_handle.user_handle_count--;
+    494                  sleep_management_handle.user_handle_resoure &= ~(1 << handle_index);
+    495                  memset(&sleep_management_handle.user_handle_name[handle_index][0], 0, SLEEP_HANDLE_NAME_LEN);
+    496              } else {
+    497                  log_hal_warning("[Sleep Management]sleep handle already release \r\n");
+    498              }
+    499              restore_interrupt_mask(mask);
+    500          }
+    501          
+    502          void sleep_management_lock_sleep(sleep_management_lock_sleep_t lock, uint8_t handle_index)
+    503          {
+    504              uint32_t mask;
+    505          
+    506              if (handle_index >= SLEEP_LOCK_HANDLE_MAX) {
+    507                  log_hal_error("[Sleep Management]sleep handle index error\r\n");
+    508                  return;
+    509              }
+    510          
+    511              mask = save_and_set_interrupt_mask();
+    512              if (lock == LOCK_SLEEP) {
+    513                  /* Lock sleep request */
+    514                  sleep_management_handle.lock_sleep_request_count[handle_index]++;
+    515                  sleep_management_handle.lock_sleep_request |= (1 << handle_index);
+    516          
+    517          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    518                  sleep_management_debug_lock_sleep_timelog(lock, handle_index);
+    519          #endif
+    520                  if (sleep_management_handle.lock_sleep_request_count[handle_index] == 0xFF) {
+    521                      if (handle_index < SLEEP_LOCK_USER_START_ID) {
+    522                          log_hal_warning("[Sleep Management]sleep handle=%d,lock sleep count full \r\n", handle_index);
+    523                      } else {
+    524                          log_hal_warning("[Sleep Management]sleep handle=%d,%s,lock sleep count full \r\n", handle_index, (char *)&sleep_management_handle.user_handle_name[handle_index]);
+    525                      }
+    526                  }
+    527              } else {
+    528                  /* Unlock sleep request */
+    529                  if (sleep_management_handle.lock_sleep_request_count[handle_index] > 0) {
+    530                      sleep_management_handle.lock_sleep_request_count[handle_index]--;
+    531                      if (sleep_management_handle.lock_sleep_request_count[handle_index] == 0) {
+    532                          sleep_management_handle.lock_sleep_request &= ~(1 << handle_index);
+    533          
+    534          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    535                          sleep_management_debug_lock_sleep_timelog(lock, handle_index);
+    536          #endif
+    537                      }
+    538                  } else {
+    539                      if (handle_index < SLEEP_LOCK_USER_START_ID) {
+    540                          log_hal_warning("[Sleep Management]sleep handle=%d,lock sleep has already released \r\n", handle_index);
+    541                      } else {
+    542                          log_hal_warning("[Sleep Management]sleep handle=%d,%s,lock sleep has already released \r\n", handle_index, (char *)&sleep_management_handle.user_handle_name[handle_index]);
+    543                      }
+    544                  }
+    545              }
+    546              restore_interrupt_mask(mask);
+    547          }
+    548          
+    549          bool sleep_management_check_sleep_locks(void)
+    550          {
+    551              uint32_t mask;
+    552              bool lock;
+    553              mask = save_and_set_interrupt_mask();
+    554          
+    555              if (sleep_management_handle.lock_sleep_request == 0) {
+    556                  lock = false;
+    557              } else {
+    558                  lock = true;
+    559              }
+    560              restore_interrupt_mask(mask);
+    561              return lock;
+    562          }
+    563          
+    564          bool sleep_management_check_handle_status(uint8_t handle_index)
+    565          {
+    566              /*  check handle index range */
+    567              if ((handle_index >= SLEEP_LOCK_HANDLE_MAX) || (handle_index < SLEEP_LOCK_USER_START_ID)) {
+    568                  log_hal_error("[Sleep Management]sleep handle index error\r\n");
+    569                  return false;
+    570              }
+    571          
+    572              handle_index -= SLEEP_LOCK_USER_START_ID;
+    573              if (sleep_management_handle.user_handle_resoure & (1 << handle_index)) {
+    574                  return true;
+    575              } else {
+    576                  return false;
+    577              }
+    578          }
+    579          
+    580          uint32_t sleep_management_get_lock_sleep_request_info(void)
+    581          {
+    582              return sleep_management_handle.lock_sleep_request;
+    583          }
+    584          
+    585          uint32_t sleep_management_get_lock_sleep_handle_list(void)
+    586          {
+    587              uint8_t i;
+    588          
+    589              log_hal_warning("[Sleep Management]lock sleep handle list : \r\n");
+    590              for (i = 0; i < SLEEP_LOCK_HANDLE_MAX; i++) {
+    591                  if (sleep_management_handle.lock_sleep_request & (1 << i)) {
+    592                      if (i < SLEEP_LOCK_USER_START_ID) {
+    593                          log_hal_warning("sleep handle=%d\r\n", i);
+    594                      } else {
+    595                          log_hal_warning("sleep handle=%d,%s\r\n", i, (char *)&sleep_management_handle.user_handle_name[i - SLEEP_LOCK_USER_START_ID][0]);
+    596                      }
+    597                  }
+    598              }
+    599              return sleep_management_handle.lock_sleep_request;
+    600          }
+    601          
+    602          void sleep_management_low_power_init_setting(void)
+    603          {
+    604              //uint32_t hw_coded;
+    605              uint32_t system_info;
+    606          
+    607              /* cm4_dcm_en */
+    608              *((volatile uint32_t *)(0xe00fe000)) = 0x3;
+    609              *((volatile uint32_t *)(0xe00fe004)) = 0x3;
+    610              *((volatile uint32_t *)(0xe0100040)) = 0x127;
+    611          
+    612              //hw_coded    = *((volatile uint32_t *)(0xA2000008)); /* HW_CODED */
+    613              system_info = *((volatile uint32_t *)(0xA2010040)); /* SYSTEM_INFOD */
+    614          
+    615              /* system_info */
+    616              if (((system_info >> 8) & 0x1)) { //
+    617                  /* bond_psram_sip_b == 0 */
+    618                  *((volatile uint32_t *)(0xA20D0058)) = 0x10; /* IO_CFG_1_PU_CFG0_CLR */
+    619                  *((volatile uint32_t *)(0xA20D0034)) = 0x10; /* IO_CFG_1_PD_CFG0_SET */
+    620              } else {
+    621                  /*TINFO = " -------------------- bond_psram_sip_b == 1-------------------- "*/
+    622                  //EMI CG
+    623                  *((volatile uint32_t *)(0xA21D0103)) = 0x4; //0xA21D0000+0x103 /* BUS_DCM_CON_0__F_RG_BUS_DCM_EN */
+    624                  //EMI IO
+    625              }
+    626              if (((system_info >> 9) & 0x1)) {
+    627                  /*TINFO = " -------------------- bond_sf_sip_b == 0 -------------------- "*/
+    628                  *((volatile uint32_t *)(0xA20D0058)) = 0x20; /* IO_CFG_1_PU_CFG0_CLR */
+    629                  *((volatile uint32_t *)(0xA20D0034)) = 0x20; /* IO_CFG_1_PD_CFG0_SET */
+    630              }
+    631          
+    632              if (((system_info >> 10) & 0x1)) {
+    633                  /*TINFO = " -------------------- bond_rsv_b == 0 -------------------- "*/
+    634                  *((volatile uint32_t *)(0xA20D0058)) = 0x40; /* IO_CFG_1_PU_CFG0_CLR */
+    635                  *((volatile uint32_t *)(0xA20D0034)) = 0x40; /* IO_CFG_1_PD_CFG0_SET */
+    636              }
+    637          
+    638              *((volatile uint32_t *)(0xA20C00A4)) = 0xF; /* IO sleep tdsel : IO_CFG_0_TDSEL_CFG_SET */
+    639          }
+    640          
+    641          int8_t hal_lp_connsys_get_own_enable_int(void)
+    642          {
+    643              if (ptr_lp_connsys_get_own_enable_int != NULL) {
+    644                  return (ptr_lp_connsys_get_own_enable_int());
+    645              }
+    646              return 0;
+    647          }
+    648          
+    649          int8_t hal_lp_connsys_give_n9_own(void)
+    650          {
+    651              if (ptr_lp_connsys_give_n9_own != NULL) {
+    652                  return (ptr_lp_connsys_give_n9_own());
+    653              }
+    654              return 0;
+    655          }
+    656          
+    657          #ifdef  SLEEP_MANAGEMENT_DEBUG_ENABLE
+    658          #include "hal_gpt.h"
+    659          uint32_t sleep_handle_total_lock_sleep_time[SLEEP_LOCK_HANDLE_MAX];
+    660          uint32_t sleep_handle_total_lock_sleep_count[SLEEP_LOCK_HANDLE_MAX];
+    661          uint32_t sleep_backup_fun_time[SLEEP_BACKUP_RESTORE_MODULE_MAX];
+    662          uint32_t sleep_restore_fun_time[SLEEP_BACKUP_RESTORE_MODULE_MAX];
+    663          
+    664          void sleep_management_debug_lock_sleep_timelog(sleep_management_lock_sleep_t lock, uint8_t handle_index)
+    665          {
+    666              static uint32_t lock_sleep_time[SLEEP_LOCK_HANDLE_MAX], unlock_sleep_time;
+    667          
+    668              if (lock == LOCK_SLEEP) {
+    669                  if (sleep_management_handle.lock_sleep_request_count[handle_index] == 1) {
+    670                      hal_gpt_get_free_run_count(HAL_GPT_CLOCK_SOURCE_32K, &lock_sleep_time[handle_index]);
+    671                  }
+    672                  sleep_handle_total_lock_sleep_count[handle_index]++;
+    673              } else {
+    674                  hal_gpt_get_free_run_count(HAL_GPT_CLOCK_SOURCE_32K, &unlock_sleep_time);
+    675          
+    676                  if (unlock_sleep_time >= lock_sleep_time[handle_index]) {
+    677                      sleep_handle_total_lock_sleep_time[handle_index] += unlock_sleep_time - lock_sleep_time[handle_index];
+    678                  } else {
+    679                      sleep_handle_total_lock_sleep_time[handle_index] += unlock_sleep_time + (0xFFFFFFFF - lock_sleep_time[handle_index]);
+    680                  }
+    681              }
+    682          }
+    683          
+    684          void sleep_management_debug_backup_restore_fun_timelog(uint32_t type, uint32_t order, uint32_t callback)
+    685          {
+    686              static  uint32_t enter, exit;
+    687          
+    688              if (order == 0) {
+    689                  hal_gpt_get_free_run_count(HAL_GPT_CLOCK_SOURCE_32K, &enter);
+    690              } else {
+    691                  hal_gpt_get_free_run_count(HAL_GPT_CLOCK_SOURCE_32K, &exit);
+    692                  if (exit >= enter) {
+    693                      exit = exit - enter;
+    694                  } else {
+    695                      exit = exit + (0xFFFFFFFF - enter);
+    696                  }
+    697                  if (type == 0) {
+    698                      sleep_backup_fun_time[callback] = exit;
+    699                  } else {
+    700                      sleep_restore_fun_time[callback] = exit;
+    701                  }
+    702              }
+    703          
+    704          }
+    705          
+    706          void sleep_management_debug_dump_lock_sleep_time()
+    707          {
+    708              uint32_t i;
+    709          
+    710              printf("dump lock sleep time : \r\n");
+    711              for (i = 0; i < SLEEP_LOCK_HANDLE_MAX; i++) {
+    712                  if (sleep_handle_total_lock_sleep_count[i] > 0) {
+    713                      printf("handle[%d] count : %d", (int)i, (int)sleep_handle_total_lock_sleep_count[i]);
+    714                      printf("handle[%d] total lock time : %d", (int)i, (int)sleep_handle_total_lock_sleep_time[i]);
+    715                  }
+    716              }
+    717          }
+    718          
+    719          void sleep_management_debug_dump_backup_restore_time()
+    720          {
+    721              uint32_t i;
+    722          
+    723              printf("dump backup restore function execute time : \r\n");
+    724              for (i = 0; i < SLEEP_BACKUP_RESTORE_MODULE_MAX; i++) {
+    725                  printf("backup fun[%d]  : %d", (int)i, (int)sleep_backup_fun_time[i]);
+    726                  printf("restore fun[%d] : %d", (int)i, (int)sleep_restore_fun_time[i]);
+    727              }
+    728          }
+    729          
+    730          void sleep_management_dump_wakeup_source(uint32_t wakeup_source,uint32_t eint_status)
+    731          {
+    732              printf("===============Wakeup from Deep Sleep===============\r\n");
+    733              printf("[Sleep Management]WAKEUP_SOURCE = 0x%x\r\n", (int)wakeup_source);
+    734              if (wakeup_source == 0x3FE) {
+    735                  printf("[Sleep Management]WAKEUP_SOURCE : GPT\r\n");
+    736              }
+    737              if (wakeup_source == 0x3FD) {        
+    738                  sleep_management_dump_eint_wakeup_source(eint_status);
+    739              }
+    740              if (wakeup_source == 0x3FB) {
+    741                  printf("[Sleep Management]WAKEUP_SOURCE : SDIO_SLV\r\n");
+    742              }
+    743              if (wakeup_source == 0x3F7) {
+    744                  printf("[Sleep Management]WAKEUP_SOURCE : SPI_SLAVE_A\r\n");
+    745              }
+    746              if (wakeup_source == 0x3EF) {
+    747                  printf("[Sleep Management]WAKEUP_SOURCE : SPI_SLAVE_B\r\n");
+    748              }
+    749              if (wakeup_source == 0x3DF) {
+    750                  printf("[Sleep Management]WAKEUP_SOURCE : WDT\r\n");
+    751              }
+    752              if (wakeup_source == 0x3BF) {
+    753                  printf("[Sleep Management]WAKEUP_SOURCE : MSDC\r\n");
+    754              }
+    755              if (wakeup_source == 0x37F) {
+    756                  printf("[Sleep Management]WAKEUP_SOURCE : DEBUGSYS\r\n");
+    757              }
+    758          }
+    759          
+    760          
+    761          void sleep_management_dump_eint_wakeup_source(uint32_t eint_num)
+    762          {
+    763              uint32_t i;
+    764          
+    765              printf("[Sleep Management]WAKEUP_SOURCE : EINT = 0x%x\r\n", (unsigned int)eint_num);
+    766          
+    767              for (i = 0; i < HAL_EINT_NUMBER_MAX; i++) {
+    768                  if (((eint_num >> i) & 0x01) == 0x01) {
+    769                      if (i <= 20) {
+    770                          printf("[Sleep Management]EINT%d\r\n", (unsigned int)i);
+    771                      }
+    772                      switch (i) {
+    773                          case 21 :
+    774                              printf("[Sleep Management]EINT_UART_0_RX\r\n");
+    775                              break;
+    776          
+    777                          case 22 :
+    778                              printf("[Sleep Management]EINT_UART_1_RX\r\n");
+    779                              break;
+    780          
+    781                          case 23 :
+    782                              printf("[Sleep Management]EINT_UART_2_RX\r\n");
+    783                              break;
+    784          
+    785                          case 24 :
+    786                              printf("[Sleep Management]EINT_RTC\r\n");
+    787                              break;
+    788          
+    789                          case 25 :
+    790                              printf("[Sleep Management]EINT_HIF\r\n");
+    791                              break;
+    792          
+    793                          case 26 :
+    794                              printf("[Sleep Management]EINT_PSE\r\n");
+    795                              break;
+    796          
+    797                          case 27 :
+    798                              printf("[Sleep Management]EINT_WDT\r\n");
+    799                              break;
+    800          
+    801                          case 28 :
+    802                              printf("[Sleep Management]EINT_MAC\r\n");
+    803                              break;
+    804          
+    805                          case 29 :
+    806                              printf("[Sleep Management]EINT_PMIC\r\n");
+    807                              break;
+    808                      }
+    809                  }
+    810              }
+    811          }
+    812          #endif
+    813          
+    814          static uint8_t _cli_deep_sleep(uint8_t len, char *param[])
+    815          {
+    816              uint32_t mask_wakeup_source;
+    817          
+    818              mask_wakeup_source = atoi(param[0]);
+    819          
+    820              printf("_cli_enter_deep_sleep\r\n");
+    821          
+    822              hal_gpt_delay_ms(100);
+    823          
+    824              if (mask_wakeup_source != 0) {
+    825                  *SPM_WAKEUP_SOURCE_MASK = 0xFFFF;
+    826              }
+    827          
+    828              __asm volatile("cpsid i");
+    829              hal_sleep_manager_set_sleep_time(3000);
+    830              hal_sleep_manager_enter_sleep_mode(HAL_SLEEP_MODE_SLEEP);
+    831              __asm volatile("cpsie i");
+    832          
+    833              printf("_cli_leave_deep_sleep\r\n");
+    834              hal_gpt_delay_ms(100);
+    835          
+    836              return 0;
+    837          }
+    838          
+    839          static uint8_t _cli_sleep_status(uint8_t len, char *param[])
+    840          {
+    841              printf("\r\ntickless:%s\r\n", hal_sleep_manager_is_sleep_locked() ? "locked" : "not locked");
+    842          
+    843              if (hal_sleep_manager_is_sleep_locked()) {
+    844                  sleep_management_get_lock_sleep_handle_list();
+    845              }
+    846          
+    847              return 0;
+    848          }
+    849          
+    850          void (*ptr_cli_dtim_enter_sleep)(uint32_t mode) = NULL;
+    851          
+    852          static uint8_t _cli_dtim_sleep(uint8_t len, char *param[])
+    853          {
+    854              uint32_t mode = atoi(param[0]);
+    855          
+    856              if (ptr_cli_dtim_enter_sleep != NULL) {
+    857                  ptr_cli_dtim_enter_sleep(mode);
+    858              }
+    859          
+    860              return 0;
+    861          }
+    862          
+    863          static uint8_t _cli_enter_retention(uint8_t len, char *param[])
+    864          {
+    865              printf("_cli_enter retention\r\n");
+    866              hal_gpt_delay_ms(100);
+    867          
+    868              sleep_management_enter_retention();
+    869          
+    870              return 0;
+    871          }
+    872          
+    873          cmd_t lp_cli[] = {
+    874              { "ds",         "deep sleep",       _cli_deep_sleep         },
+    875              { "status",     "sleep status",     _cli_sleep_status       },
+    876              { "dtim",       "DTIM sleep",       _cli_dtim_sleep         },
+    877              { "retention",  "enter retention",  _cli_enter_retention    },
+    878              { NULL }
+    879          };
+    880          
+    881          #endif
+
+Errors: 8
+Warnings: 2

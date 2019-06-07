@@ -1,0 +1,114 @@
+
+/* Class = "IBUILabel"; text = "Range size"; ObjectID = "2r4-ox-vEh"; */
+"2r4-ox-vEh.text" = "区域设定";
+
+/* Class = "IBUITableViewSection"; footerTitle = "Both the phone and BLE device ring or vibrate when the BLE device meets the range alert conditions"; ObjectID = "3gq-ON-fT9"; */
+"3gq-ON-fT9.footerTitle" = "当BLE设备满足区域警报的条件时, 手机与BLE设备将同时响铃或震动";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Range alert"; ObjectID = "3gq-ON-fT9"; */
+"3gq-ON-fT9.headerTitle" = "区域警报";
+
+/* Class = "IBUILabel"; text = "Version 1.1.1"; ObjectID = "5AI-Ob-DRO"; */
+"5AI-Ob-DRO.text" = "Version 1.1.5";
+
+/* Class = "IBUILabel"; text = "Alert"; ObjectID = "6LP-tU-UaZ"; */
+"6LP-tU-UaZ.text" = "警报";
+
+/* Class = "IBUILabel"; text = "Disconnected"; ObjectID = "78M-6b-nAd"; */
+"78M-6b-nAd.text" = "已断连";
+
+/* Class = "IBUIButton"; normalTitle = "Forget this device"; ObjectID = "7Dk-kF-wCh"; */
+"7Dk-kF-wCh.normalTitle" = "忽略此设备";
+
+/* Class = "IBUILabel"; text = "Near"; ObjectID = "Fsx-MO-osx"; */
+"Fsx-MO-osx.text" = "很近";
+
+/* Class = "IBUITableViewSection"; footerTitle = "Range Size may change because of the device signal strength, Certain elements can weaken the strength such as our body, walls and other obstructions."; ObjectID = "IiS-HB-bkc"; */
+"IiS-HB-bkc.footerTitle" = "区域的有效范围取决于信号强度并会有所变动。在一些障碍物的影响下可能导致设备信号减弱,如人体,墙壁等。";
+
+/* Class = "IBUILabel"; text = "Middle"; ObjectID = "JEk-s0-9MI"; */
+"JEk-s0-9MI.text" = "中等";
+
+/* Class = "IBUILabel"; text = "Ringtone"; ObjectID = "KUK-79-BNj"; */
+"KUK-79-BNj.text" = "警报响铃";
+
+/* Class = "IBUILabel"; text = "Disconnect alert"; ObjectID = "L1R-TP-qFP"; */
+"L1R-TP-qFP.text" = "断连警报";
+
+/* Class = "IBUILabel"; text = "Range alert"; ObjectID = "Lzz-Q0-r5c"; */
+"Lzz-Q0-r5c.text" = "区域警报";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "Ovk-qI-3Vb"; */
+"Ovk-qI-3Vb.text" = "Label";
+
+/* Class = "IBUILabel"; text = "Off"; ObjectID = "TL6-Qz-8Xl"; */
+"TL6-Qz-8Xl.text" = "关";
+
+/* Class = "IBUIBarButtonItem"; title = "< Back"; ObjectID = "WNH-eU-gIR"; */
+"WNH-eU-gIR.title" = "< 设备宝";
+
+/* Class = "IBUINavigationItem"; title = "MediaTek SmartDevice"; ObjectID = "X5n-7C-hLk"; */
+"X5n-7C-hLk.title" = "联发科智能设备宝";
+
+/* Class = "IBUITableViewSection"; headerTitle = "Device"; ObjectID = "b0l-5m-fd7"; */
+"b0l-5m-fd7.headerTitle" = "设备名称";
+
+/* Class = "IBUILabel"; text = "In range"; ObjectID = "b6C-R9-rAv"; */
+"b6C-R9-rAv.text" = "进入设定区域";
+
+/* Class = "IBUIBarButtonItem"; title = "< Back"; ObjectID = "bcF-qf-P04"; */
+"bcF-qf-P04.title" = "< 设备宝";
+
+/* Class = "IBUINavigationItem"; title = "Range size"; ObjectID = "cG3-d3-9Zm"; */
+"cG3-d3-9Zm.title" = "区域设定";
+
+/* Class = "IBUIButton"; normalTitle = "Connect"; ObjectID = "dsO-ch-5dO"; */
+"dsO-ch-5dO.normalTitle" = "连接";
+
+/* Class = "IBUINavigationItem"; title = "Device"; ObjectID = "e2E-ag-gYl"; */
+"e2E-ag-gYl.title" = "设备";
+
+/* Class = "IBUIBarButtonItem"; title = "< Back"; ObjectID = "hOb-JJ-3lv"; */
+"hOb-JJ-3lv.title" = "< 设备宝";
+
+/* Class = "IBUILabel"; text = "Out of range"; ObjectID = "iH0-EC-QeG"; */
+"iH0-EC-QeG.text" = "离开设定区域";
+
+/* Class = "IBUILabel"; text = "Out of range"; ObjectID = "jSq-ao-sb4"; */
+"jSq-ao-sb4.text" = "离开设定区域";
+
+/* Class = "IBUILabel"; text = "Far"; ObjectID = "m0W-6R-mns"; */
+"m0W-6R-mns.text" = "很远";
+
+/* Class = "IBUILabel"; text = "Alert"; ObjectID = "qpT-eO-jnu"; */
+"qpT-eO-jnu.text" = "警报";
+
+/* Class = "IBUIBarButtonItem"; title = "< Back"; ObjectID = "rHz-xn-qYR"; */
+"rHz-xn-qYR.title" = "< 设备宝";
+
+/* Class = "IBUINavigationItem"; title = "MediaTek SmartDevice"; ObjectID = "ryE-z8-EuV"; */
+"ryE-z8-EuV.title" = "联发科智能设备宝";
+
+/* Class = "IBUIButton"; normalTitle = "Disconnect"; ObjectID = "sXy-Pb-Moz"; */
+"sXy-Pb-Moz.normalTitle" = "断开连接";
+
+/* Class = "IBUIButton"; normalTitle = "Find device"; ObjectID = "ujI-kI-U9G"; */
+"ujI-kI-U9G.normalTitle" = "寻找设备";
+
+/* Class = "IBUINavigationItem"; title = "Alert"; ObjectID = "urP-OL-BRF"; */
+"urP-OL-BRF.title" = "警报";
+
+/* Class = "IBUILabel"; text = "Far"; ObjectID = "vJQ-qe-wxa"; */
+"vJQ-qe-wxa.text" = "很远";
+
+/* Class = "IBUINavigationItem"; title = "When"; ObjectID = "w6c-fD-mUl"; */
+"w6c-fD-mUl.title" = "报警时间点";
+
+/* Class = "IBUITableViewSection"; footerTitle = "Both the phone and BLE device ring or vibrate when the BLE device is disconnected"; ObjectID = "xal-7b-84G"; */
+"xal-7b-84G.footerTitle" = "当BLE设备与手机断开连接时,手机 与BLE设备将同时响铃或震动";
+
+/* Class = "IBUILabel"; text = "When"; ObjectID = "xyc-Xv-ArI"; */
+"xyc-Xv-ArI.text" = "报警时间点";
+
+/* Class = "IBUILabel"; text = "Vibration"; ObjectID = "zVR-Oc-PQV"; */
+"zVR-Oc-PQV.text" = "警报振动";
