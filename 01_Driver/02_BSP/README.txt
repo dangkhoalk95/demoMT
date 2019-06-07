@@ -1,1 +1,0 @@
-# Get HAL for chip in <SDK>\driver\board
