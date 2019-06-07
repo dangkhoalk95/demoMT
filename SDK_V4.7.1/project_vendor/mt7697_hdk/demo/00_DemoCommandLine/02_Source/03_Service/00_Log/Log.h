@@ -3,11 +3,12 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
+
 #include <stdio.h>
 
 // Hard code here
 #define DCL_LOG_ON
-#define dcl_log(...)    printf(__VA_ARGS__)   
 
 #define ENABLE_DCL_LOG_MSG_DEBUG     1
 #define ENABLE_DCL_LOG_MSG_LOW       0
@@ -26,19 +27,14 @@
 
 #define DCL_LOG_DEBUG(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_DEBUG, xx_fmt, ##__VA_ARGS__)
-
 #define DCL_LOG_LOW(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_LOW, xx_fmt, ##__VA_ARGS__)
-
 #define DCL_LOG_MED(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_MED, xx_fmt, ##__VA_ARGS__)
-
 #define DCL_LOG_HIGH(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_HIGH, xx_fmt, ##__VA_ARGS__)
-
 #define DCL_LOG_ERROR(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_ERROR, xx_fmt, ##__VA_ARGS__)
-
 #define DCL_LOG_FATAL(xx_fmt, ...) \
   DCL_APPS_LOG(DCL_LOG_MSG_FATAL, xx_fmt, ##__VA_ARGS__)
 
@@ -70,5 +66,24 @@
 #else
     #define DCL_APPS_RAW(xx_prio, xx_fmt, ...)
 #endif // DCL_LOG_ON
+
+#define ZEROPAD	1		/* pad with zero */
+#define SIGN	2		/* unsigned/signed long */
+#define PLUS	4		/* show plus */
+#define SPACE	8		/* space if plus */
+#define LEFT	16		/* left justified */
+#define SMALL	32		/* Must be 32 == 0x20 */
+#define SPECIAL	64		/* 0x */
+
+#define TEMP_BUFFER_SIZE   1024
+
+#define __do_div(n, base) ({ \
+int __res; \
+__res = ((unsigned long) n) % (unsigned) base; \
+n = ((unsigned long) n) / (unsigned) base; \
+__res; })
+
+//Prototype ( must have )
+int dcl_log(const char *fmt, ...);
 
 #endif
