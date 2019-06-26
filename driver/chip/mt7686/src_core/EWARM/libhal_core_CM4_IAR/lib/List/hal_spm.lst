@@ -1,0 +1,586 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V7.50.1.10123/W32 for ARM       07/Apr/2017  14:04:55
+# Copyright 1999-2015 IAR Systems AB.
+#
+#    Cpu mode     =  thumb
+#    Endian       =  little
+#    Source file  =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_spm.c
+#    Command line =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_spm.c -D
+#        MTK_DEBUG_LEVEL_INFO -D PRODUCT_VERSION=7686 -lcN
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List
+#        -lA
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List
+#        --diag_suppress Pa050,Ta022,Ta023 --diag_error Pe606 -o
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\Obj
+#        --no_unroll --no_inline --no_tbaa --no_scheduling --debug
+#        --endian=little --cpu=Cortex-M4 -e --fpu=VFPv4_sp --dlib_config
+#        "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        7.3\arm\INC\c\DLib_Config_Full.h" -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\inc\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\CMSIS\Include\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\CMSIS\Device\MTK\mt7686\Include\
+#        -I
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\..\..\..\..\..\..\kernel\service\inc\
+#        -I W:\Documents\2523_dev\gva\middleware\MTK\minicli\inc\ -Om -I
+#        "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        7.3\arm\CMSIS\Include\"
+#    List file    =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\List\hal_spm.lst
+#    Object file  =  
+#        W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\EWARM\libhal_core_CM4_IAR\lib\Obj\hal_spm.o
+#
+###############################################################################
+
+W:\Documents\2523_dev\gva\driver\chip\mt7686\src_core\hal_spm.c
+      1          /* Copyright Statement:
+      2           *
+      3           * (C) 2005-2016  MediaTek Inc. All rights reserved.
+      4           *
+      5           * This software/firmware and related documentation ("MediaTek Software") are
+      6           * protected under relevant copyright laws. The information contained herein
+      7           * is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
+      8           * Without the prior written permission of MediaTek and/or its licensors,
+      9           * any reproduction, modification, use or disclosure of MediaTek Software,
+     10           * and information contained herein, in whole or in part, shall be strictly prohibited.
+     11           * You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
+     12           * if you have agreed to and been bound by the applicable license agreement with
+     13           * MediaTek ("License Agreement") and been granted explicit permission to do so within
+     14           * the License Agreement ("Permitted User").  If you are not a Permitted User,
+     15           * please cease any access or use of MediaTek Software immediately.
+     16           * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+     17           * THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
+     18           * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
+     19           * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+     20           * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+     21           * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+     22           * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+     23           * SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+     24           * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+     25           * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+     26           * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+     27           * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+     28           * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+     29           * CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+     30           * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
+     31           * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+     32           * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+     33           */
+     34          
+     35          #include "hal_spm.h"
+     36          
+     37          #ifdef HAL_SLEEP_MANAGER_ENABLED
+     38          
+     39          #include <stdio.h>
+     40          #include <string.h>
+     41          #include "hal_log.h"
+     42          #include "memory_attribute.h"
+     43          #include "hal_nvic.h"
+     44          #include "hal_nvic_internal.h"
+     45          #include "assert.h"
+     46          #include "hal_gpt.h"
+     47          #include "hal_pmu.h"
+     48          #include "hal_clock.h"
+     49          #include "hal_platform.h"
+     50          
+     51          /* SPM Code Rev : 20170306 - pcm_suspend.spm */
+     52          const unsigned int pcm_event_vector_parameter[8] = {0x31, 0x140032, 0x460033, 0x5a0034, 0x680035, 0x0, 0x0, 0x0};
+     53          #define PCM_IM_MAX_LENGTH 612
+     54          static const unsigned int spm_im[PCM_IM_MAX_LENGTH] = {
+     55              0x1910001f, 0xa20f0810, 0x81000404, 0x1950001f, 0xa20f0810, 0x81421401, 0xa1401005, 0xd82001a5, 0x17c07c1f,
+     56              0x1b00001f, 0x40000001, 0xf0000000, 0x17c07c1f, 0x18c0001f, 0xa20f0810, 0xe0e00010, 0x1b00001f, 0x80000001,
+     57              0xf0000000, 0x17c07c1f, 0x18c0001f, 0xa20f03a8, 0x1910001f, 0xa20f03a8, 0x89000004, 0xfffffeff, 0xe0c00004,
+     58              0x18c0001f, 0xa21f0010, 0x1900001f, 0x00010001, 0xe0c00004, 0x18c0001f, 0xa20f02c0, 0xe0e00001, 0x18d0001f,
+     59              0xa21f0010, 0x814c0c01, 0x1990001f, 0xa20f02c0, 0x81841801, 0x1910001f, 0xa20f03ac, 0x81081001, 0xa1a01006,
+     60              0x81001805, 0xd8200464, 0x17c07c1f, 0x88d00001, 0xa0050000, 0xd8200603, 0x17c07c1f, 0x18c0001f, 0xa20f0810,
+     61              0xe0e00004, 0x18c0001f, 0xa20f0204, 0x1940001f, 0x00000001, 0x1910001f, 0xa20f03ac, 0x81041001, 0xc8e01c24,
+     62              0x17c07c1f, 0xa0118400, 0xa0110400, 0x1b00001f, 0x042a2001, 0xf0000000, 0x17c07c1f, 0x18c0001f, 0xa20f0810,
+     63              0xe0e00008, 0x18c0001f, 0xa20f03a8, 0x1910001f, 0xa20f03a8, 0x89000004, 0xfffffefe, 0xe0c00004, 0x1b00001f,
+     64              0x04122001, 0xe8208000, 0xa20f0300, 0x0b16ff0c, 0xe8208000, 0xa20f0300, 0x0b16ff08, 0xf0000000, 0x17c07c1f,
+     65              0x18c0001f, 0xa20f0810, 0xe0e00004, 0x18c0001f, 0xa20f03a8, 0x1910001f, 0xa20f03a8, 0xa9000004, 0x00000001,
+     66              0xe0c00004, 0x1b00001f, 0x042a2001, 0xf0000000, 0x17c07c1f, 0x18c0001f, 0xa20f0810, 0xe0e00002, 0x18c0001f,
+     67              0xa20f0204, 0x1940001f, 0x00000001, 0x1910001f, 0xa20f0808, 0x81009001, 0xc8e011c4, 0x17c07c1f, 0x18c0001f,
+     68              0xa21f0010, 0x1900001f, 0x00000001, 0xe0c00004, 0x18c0001f, 0xa20f02c0, 0xe0e00000, 0x80328400, 0x1b80001f,
+     69              0x2000259f, 0x80310400, 0x1b80001f, 0x20000cda, 0x80318400, 0x18c0001f, 0xa20f03a8, 0x1910001f, 0xa20f03a8,
+     70              0xa9000004, 0x00000101, 0xe0c00004, 0x1b00001f, 0x04062001, 0xf0000000, 0x17c07c1f, 0xe0e00016, 0x1b80001f,
+     71              0x20000001, 0xe0e0001e, 0x1b80001f, 0x20000001, 0x81801401, 0xd80013e6, 0x17c07c1f, 0x81809401, 0xd8001686,
+     72              0x17c07c1f, 0x81811401, 0xd8001a46, 0x17c07c1f, 0xd0001b00, 0x17c07c1f, 0x1900001f, 0xa20f0254, 0x1980001f,
+     73              0x00010101, 0xe1000006, 0x1b80001f, 0x2000000e, 0x1980001f, 0x00000101, 0xe1000006, 0x1b80001f, 0x2000000e,
+     74              0xe1200100, 0x1900001f, 0xa20f02b0, 0x1980001f, 0x00010100, 0xe1000006, 0xe1200100, 0xd0001b00, 0x17c07c1f,
+     75              0x1900001f, 0xa20f0230, 0xe120003f, 0xe120001f, 0xe120000f, 0xe1200007, 0xe1200003, 0xe1200001, 0xe1200000,
+     76              0x1b80001f, 0x20000122, 0x1900001f, 0xa20f0224, 0x1980001f, 0x00010101, 0xe1000006, 0x1b80001f, 0x2000000e,
+     77              0x1980001f, 0x00000101, 0xe1000006, 0x1b80001f, 0x2000000e, 0xe1200100, 0x1900001f, 0xa20f0234, 0xe1200100,
+     78              0xe1200000, 0xd0001b00, 0x17c07c1f, 0x1900001f, 0xa20f0260, 0x1980001f, 0x00010100, 0xe1000006, 0xe1200100,
+     79              0xe0e0000e, 0xe0e0000c, 0xe0e0001c, 0x1b80001f, 0x20000004, 0xe0e0001d, 0xe0e0000d, 0xf0000000, 0x17c07c1f,
+     80              0xe0e0001d, 0xe0e0001f, 0x81801401, 0xd8001dc6, 0x17c07c1f, 0x81809401, 0xd8002086, 0x17c07c1f, 0x81811401,
+     81              0xd8002326, 0x17c07c1f, 0xd0002420, 0x17c07c1f, 0x1900001f, 0xa20f0254, 0xe1200101, 0x1980001f, 0x00010101,
+     82              0xe1000006, 0x1b80001f, 0x2000000e, 0x1980001f, 0x00010001, 0xe1000006, 0x1b80001f, 0x2000000e, 0x1900001f,
+     83              0xa20f02b0, 0x1980001f, 0x00010100, 0xe1000006, 0x1980001f, 0x00010101, 0xe1000006, 0xd0002420, 0x1900001f,
+     84              0xa20f0230, 0xe120007f, 0x1900001f, 0xa20f0224, 0xe1200101, 0x1980001f, 0x00010101, 0xe1000006, 0x1b80001f,
+     85              0x2000000e, 0x1980001f, 0x00010001, 0xe1000006, 0x1b80001f, 0x2000000e, 0x1900001f, 0xa20f0234, 0xe1200100,
+     86              0xe120010f, 0xd0002420, 0x1900001f, 0xa20f0260, 0x1980001f, 0x00010100, 0xe1000006, 0x1980001f, 0x00010101,
+     87              0xe1000006, 0xe0e0001e, 0xe0e0001a, 0xe0e00012, 0xf0000000, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     88              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     89              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     90              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     91              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     92              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     93              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     94              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     95              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     96              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     97              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     98              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+     99              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    100              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    101              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    102              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    103              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    104              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    105              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    106              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    107              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    108              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    109              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    110              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f,
+    111              0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x17c07c1f, 0x1840001f,
+    112              0x00000001, 0x18c0001f, 0xa20f0810, 0xe0e00001, 0xa0100400, 0xa1d00407, 0x18c0001f, 0xa20f0380, 0xe0f07fff,
+    113              0x1b00001f, 0x04032001, 0x81f10407, 0x1b80001f, 0xd0100001, 0x810f3001, 0xd8004bc4, 0x17c07c1f, 0xe8208000,
+    114              0xa20f0300, 0x0b16ff08, 0x18c0001f, 0xa20f0810, 0xe0e00002, 0x18c0001f, 0xa21f0010, 0xe0e00001, 0x18d0001f,
+    115              0xa21f0010, 0x81040c01, 0xd8204364, 0x17c07c1f, 0x18c0001f, 0xa20f0200, 0x1940001f, 0x00000002, 0xc0c01c20,
+    116              0x17c07c1f, 0x18c0001f, 0xc0070140, 0x1900001f, 0x90904bed, 0xe0c00004, 0xa0120400, 0x1b00001f, 0x04062001,
+    117              0x1b80001f, 0x90100001, 0x1b80001f, 0x2000259f, 0x80310400, 0x1b80001f, 0x20000cda, 0x80318400, 0x80320400,
+    118              0x80328400, 0x1910001f, 0xa20f0808, 0x81009001, 0x18c0001f, 0xa20f0204, 0x1940001f, 0x00000001, 0xc8e011c4,
+    119              0x17c07c1f, 0x18c0001f, 0xa20f03a8, 0x1910001f, 0xa20f03a8, 0xa9000004, 0x00000101, 0xe0c00004, 0x18c0001f,
+    120              0xa20f0200, 0x1940001f, 0x00000002, 0xc0c011c0, 0x17c07c1f, 0x18c0001f, 0xa21f0010, 0x1900001f, 0x00000000,
+    121              0xe0c00004, 0x18c0001f, 0xa20f02c0, 0xe0e00000, 0x18c0001f, 0xc0070140, 0x1900001f, 0xfee1900d, 0xe0c00004,
+    122              0xe8208000, 0xa20f0300, 0x0b16ff08, 0x18c0001f, 0xa20f0810, 0xe0e00000, 0x81f00407, 0xa1d10407, 0xf0000000,
+    123          };
+    124          
+    125          
+    126          uint32_t manual_spm_read_im(uint32_t addr);
+    127          void manual_spm_write_im(uint32_t addr, uint32_t data);
+    128          void spm_control_mtcmos_internal(spm_mtcmos_type_t mtcmos, spm_mtcmos_ctrl_t ctrl);
+    129          
+    130          ATTR_TEXT_IN_TCM void spm_kick_start(void)
+    131          {
+    132              hal_clock_enable(HAL_CLOCK_CG_SW_SPM);
+    133          
+    134              //Need reset SPM ,after wakeup from sleep
+    135              /* [4]: Resets PCM */
+    136              *SPM_PCM_CON0 = 0x0B160000 | 0x10;
+    137              hal_gpt_delay_us(10);
+    138              *SPM_PCM_CON0 = 0x0B160000;
+    139              hal_gpt_delay_us(10);
+    140          
+    141              //*SPM_SIDEBAND_CONTROL_0 |= (0x0F << 16); // wait UART_SLEEP_ACK = 0xF
+    142          
+    143              *SPM_POWER_ON_VAL0 = *SPM_PCM_REG0_DATA;
+    144              *SPM_POWER_ON_VAL1 = *SPM_PCM_REG7_DATA;
+    145              *SPM_PCM_REG_DATA_INI = *SPM_POWER_ON_VAL0 | 0x1;   // [0]: sc_xo_cg_en default =1
+    146          
+    147              *SPM_PCM_PWR_IO_EN = 0x00010000;                    // for R0
+    148              *SPM_PCM_PWR_IO_EN = 0x00000000;
+    149              *SPM_PCM_REG_DATA_INI = *SPM_POWER_ON_VAL1;
+    150              *SPM_PCM_PWR_IO_EN = 0x00800000;                    // for R7
+    151              *SPM_PCM_PWR_IO_EN = 0x00000000;
+    152          
+    153              *SPM_PCM_PWR_IO_EN = 0x81;
+    154          
+    155              *SPM_SLEEP_WAKEUP_EVENT_MASK = 0xFFFFFFFF;          //mask all AP wakeup event
+    156          
+    157              *SPM_PCM_CON0 = 0x0B160103;
+    158          }
+    159          
+    160          void spm_init(uint32_t spm_auto_load)
+    161          {
+    162              uint32_t i, status;
+    163          
+    164              if (HAL_CLOCK_STATUS_OK != hal_clock_enable(HAL_CLOCK_CG_SW_SPM)) {
+    165                  log_hal_error("\r\n [SPM] Clock enable failed!");
+    166              }
+    167          
+    168              /* [4]: Resets PCM */
+    169              *SPM_PCM_CON0 = 0x0B160000 | 0x10;
+    170              hal_gpt_delay_us(10);
+    171              *SPM_PCM_CON0 = 0x0B160000;
+    172              hal_gpt_delay_us(10);
+    173          
+    174              //*SPM_SIDEBAND_CONTROL_0 |= (0x0F << 16); // wait UART_SLEEP_ACK = 0xF
+    175          
+    176              /* Load PCM_EVENT_VECTOR[0-7] */
+    177              *SPM_PCM_EVENT_VECTOR0 = pcm_event_vector_parameter[0];
+    178              *SPM_PCM_EVENT_VECTOR1 = pcm_event_vector_parameter[1];
+    179              *SPM_PCM_EVENT_VECTOR2 = pcm_event_vector_parameter[2];
+    180              *SPM_PCM_EVENT_VECTOR3 = pcm_event_vector_parameter[3];
+    181              *SPM_PCM_EVENT_VECTOR4 = pcm_event_vector_parameter[4];
+    182              *SPM_PCM_EVENT_VECTOR5 = pcm_event_vector_parameter[5];
+    183              *SPM_PCM_EVENT_VECTOR6 = pcm_event_vector_parameter[6];
+    184              *SPM_PCM_EVENT_VECTOR7 = pcm_event_vector_parameter[7];
+    185          
+    186              *SPM_POWER_ON_VAL0 = 0;
+    187              *SPM_POWER_ON_VAL1 = 0x44;
+    188          
+    189              *SPM_PCM_REG_DATA_INI = *SPM_POWER_ON_VAL0 | 0x1; // [0]: sc_xo_cg_en default =1
+    190          
+    191              *SPM_PCM_PWR_IO_EN = 0x00010000; // for R0
+    192              *SPM_PCM_PWR_IO_EN = 0x00000000;
+    193              *SPM_PCM_REG_DATA_INI = *SPM_POWER_ON_VAL1;
+    194              *SPM_PCM_PWR_IO_EN = 0x00800000; // for R7
+    195              *SPM_PCM_PWR_IO_EN = 0x00000000;
+    196              *SPM_CLK_SETTLE = 0x3;
+    197          
+    198              /* Init IM Length and pointer */
+    199              *SPM_PCM_IM_LEN = PCM_IM_MAX_LENGTH;
+    200              *SPM_PCM_IM_PTR = (volatile uint32_t)spm_im;
+    201              if (spm_auto_load != 0) {
+    202                  *SPM_PCM_CON1 = 0x0B160001; // Enables IM slave mode
+    203                  /* Kick IM process */
+    204                  *SPM_PCM_CON0 = 0x0B160002;
+    205                  printf("spm_auto_load\r\n");
+    206              } else {
+    207                  printf("manual load spm code\r\n");
+    208                  /* manual load spm code */
+    209                  for (i = 0; i < PCM_IM_MAX_LENGTH; i++) {
+    210                      manual_spm_write_im(i, spm_im[i]);
+    211                  }
+    212          
+    213                  *SPM_PCM_CON1 = 0x0B163C49;
+    214                  /* Kick IM process */
+    215                  *SPM_PCM_CON0 = 0x0B160002;
+    216              }
+    217          
+    218              /* Wait ready state */
+    219              do {
+    220                  status = (*SPM_PCM_FSM_STA >> 9) & 0x1;
+    221              } while (status != 0x01);
+    222          
+    223              /* Read back spm code */
+    224              uint32_t im_check_buf[PCM_IM_MAX_LENGTH];
+    225              for (i = 0; i < PCM_IM_MAX_LENGTH; i++) {
+    226                  im_check_buf[i] = manual_spm_read_im(i);
+    227              }
+    228          
+    229              /* Check SPM Code */
+    230              if (memcmp(im_check_buf, spm_im, PCM_IM_MAX_LENGTH * 4) == 0) {
+    231                  log_hal_warning("SPM Code loading Success\r\n");
+    232              } else {
+    233                  log_hal_warning("SPM Code loading Fail\r\n");
+    234              }
+    235          
+    236              *SPM_PCM_PWR_IO_EN = 0x0081;                // enable R0 & R7 output
+    237              *SPM_SEQUENCER_26M_REG_1 = 0x1B;
+    238              *SPM_SEQUENCER_32K_REG_3 = (0x18);          //pmu guard time need check!!!
+    239          
+    240              /* SYSTEM_INFOD */
+    241              if (((*(volatile uint32_t *)(0xA2010040)) & 0x20) == 0) {
+    242                  /* use external 32K */
+    243                  *SPM_SEQUENCER_32K_REG_1 &= 0xFF00;     //XO_OFF_RISE_SETTLE_TIME = 0
+    244                  *SPM_SEQUENCER_32K_REG_2 &= 0xFF00;     //XO_OFF_FALL_SETTLE_TIME = 0
+    245              } else {
+    246                  /* use internal 32K */
+    247                  *SPM_SEQUENCER_32K_REG_1 |= 0x000C;     //XO_OFF_RISE_SETTLE_TIME = 0x0C
+    248                  *SPM_SEQUENCER_32K_REG_2 |= 0x0029;     //XO_OFF_FALL_SETTLE_TIME = 0x29
+    249              }
+    250          
+    251              *SPM_RESOURCE_CONTROL_0 |= 0x00010000;      //Force on CONN MTCMOS
+    252              *SPM_RESOURCE_CONTROL_0 |= 0x01000000;      //Force on SDIO MTCMOS
+    253          
+    254              *SPM_WAKEUP_SOURCE_MASK = 0x80;             //enable all wakeup source,without debugsys
+    255          
+    256              if (HAL_CLOCK_STATUS_OK != hal_clock_disable(HAL_CLOCK_CG_SW_SPM)) {
+    257                  log_hal_error("\r\n [SPM] Clock disable failed!");
+    258              }
+    259          }
+    260          
+    261          uint32_t spm_control_mtcmos(spm_mtcmos_type_t mtcmos, spm_mtcmos_ctrl_t ctrl)
+    262          {
+    263              static uint32_t mtcmos_conn_resource_cnt = 0, mtcmos_sdio_resource_cnt = 0;
+    264              if (mtcmos == SPM_MTCMOS_CONN) {
+    265                  if (ctrl == SPM_MTCMOS_PWR_DISABLE) {
+    266                      if (mtcmos_conn_resource_cnt == 0) {
+    267                          spm_control_mtcmos_internal(SPM_MTCMOS_CONN, SPM_MTCMOS_PWR_DISABLE);
+    268                          return 0;
+    269                      }
+    270                      mtcmos_conn_resource_cnt--;
+    271                      if (mtcmos_conn_resource_cnt == 0) {
+    272                          spm_control_mtcmos_internal(SPM_MTCMOS_CONN, SPM_MTCMOS_PWR_DISABLE);
+    273                      }
+    274                  } else {
+    275                      mtcmos_conn_resource_cnt++;
+    276                      if (mtcmos_conn_resource_cnt != 0) {
+    277                          spm_control_mtcmos_internal(SPM_MTCMOS_CONN, SPM_MTCMOS_PWR_ENABLE);
+    278                      }
+    279                  }
+    280                  return (mtcmos_conn_resource_cnt);
+    281              }
+    282          
+    283              if (mtcmos == SPM_MTCMOS_SDIO_SLV) {
+    284                  if (ctrl == SPM_MTCMOS_PWR_DISABLE) {
+    285                      if (mtcmos_sdio_resource_cnt == 0) {
+    286                          spm_control_mtcmos_internal(SPM_MTCMOS_SDIO_SLV, SPM_MTCMOS_PWR_DISABLE);
+    287                          return 0;
+    288                      }
+    289                      mtcmos_sdio_resource_cnt--;
+    290                      if (mtcmos_sdio_resource_cnt == 0) {
+    291                          spm_control_mtcmos_internal(SPM_MTCMOS_SDIO_SLV, SPM_MTCMOS_PWR_DISABLE);
+    292                      }
+    293                  } else {
+    294                      mtcmos_sdio_resource_cnt++;
+    295                      if (mtcmos_sdio_resource_cnt != 0) {
+    296                          spm_control_mtcmos_internal(SPM_MTCMOS_SDIO_SLV, SPM_MTCMOS_PWR_ENABLE);
+    297                      }
+    298                  }
+    299                  return (mtcmos_sdio_resource_cnt);
+    300              }
+    301              return 0;
+    302          }
+    303          
+    304          void spm_control_mtcmos_internal(spm_mtcmos_type_t mtcmos, spm_mtcmos_ctrl_t ctrl)
+    305          {
+    306              if (mtcmos == SPM_MTCMOS_CONN) {
+    307                  if (ctrl == SPM_MTCMOS_PWR_DISABLE) {
+    308                      if ((*SPM_PWR_STATUS & 0x4) == 0) {
+    309                          return;
+    310                      }
+    311                      /* E1 sw WK,E2 need remove */
+    312                      pmu_set_register_value(PMU_DIG_VCORE_ANA_CON3, PMU_RG_BUCK_ZXPDN_MASK, PMU_RG_BUCK_ZXPDN_SHIFT, 0); //enable PMU FPWM
+    313          
+    314                      hal_clock_enable(HAL_CLOCK_CG_SW_SPM);
+    315                      *SPM_RESOURCE_CONTROL_0 &= 0xFFFEFFFF;   //Force off CONN MTCMOS
+    316                      //CONN MTCMOS OFF
+    317                      *SPM_CONN_PWR_CON = 0x1D;
+    318                      hal_gpt_delay_us(1);
+    319                      *SPM_CONN_PWR_CON = 0x1F;
+    320                      hal_gpt_delay_us(1);
+    321                      *SPM_CONN_PWR_CON = 0x1E;
+    322                      hal_gpt_delay_us(1);
+    323                      *SPM_CONN_PWR_CON = 0x1A;
+    324                      hal_gpt_delay_us(1);
+    325                      *SPM_CONN_PWR_CON = 0x12;
+    326                      hal_gpt_delay_us(1);
+    327                      hal_clock_disable(HAL_CLOCK_CG_SW_SPM);
+    328                  } else {
+    329                      if ((*SPM_PWR_STATUS & 0x4) == 0) {
+    330                          if ((*SPM_PWR_STATUS & 0x4) != 0) {
+    331                              return;
+    332                          }
+    333                          /* E1 sw WK,E2 need remove */
+    334                          pmu_set_register_value(PMU_DIG_VCORE_ANA_CON3, PMU_RG_BUCK_ZXPDN_MASK, PMU_RG_BUCK_ZXPDN_SHIFT, 1); //disable PMU FPWM
+    335          
+    336                          hal_clock_enable(HAL_CLOCK_CG_SW_SPM);
+    337                          *SPM_RESOURCE_CONTROL_0 |= 0x00010000;   //Force on CONN MTCMOS
+    338                          //CONN MTCMOS ON
+    339                          *SPM_CONN_PWR_CON = 0x16;
+    340                          hal_gpt_delay_us(1);
+    341                          *SPM_CONN_PWR_CON = 0x1E;
+    342                          hal_gpt_delay_us(1);
+    343                          *SPM_CONN_PWR_CON = 0x0E;
+    344                          hal_gpt_delay_us(1);
+    345                          *SPM_CONN_PWR_CON = 0x0C;
+    346                          hal_gpt_delay_us(1);
+    347                          *SPM_CONN_PWR_CON = 0x1C;
+    348                          hal_gpt_delay_us(1);
+    349                          *SPM_CONN_PWR_CON = 0x1D;
+    350                          hal_gpt_delay_us(1);
+    351                          *SPM_CONN_PWR_CON = 0x0D;
+    352                          hal_gpt_delay_us(1);
+    353                          hal_clock_disable(HAL_CLOCK_CG_SW_SPM);
+    354                      }
+    355                  }
+    356                  return;
+    357              }
+    358          
+    359              if (mtcmos == SPM_MTCMOS_SDIO_SLV) {
+    360                  if (ctrl == SPM_MTCMOS_PWR_DISABLE) {
+    361                      if ((*SPM_PWR_STATUS & 0x8) == 0) {
+    362                          return;
+    363                      }
+    364                      hal_clock_enable(HAL_CLOCK_CG_SW_SPM);
+    365                      *SPM_RESOURCE_CONTROL_0 &= 0xFEFFFFFF;   //Force off SDIO MTCMOS
+    366                      //SDIO_SLV MTCMOS OFF
+    367                      *SPM_SDIO_SLV_PWR_CON = 0x1D;
+    368                      hal_gpt_delay_us(1);
+    369                      *SPM_SDIO_SLV_PWR_CON = 0x1F;
+    370                      hal_gpt_delay_us(1);
+    371          
+    372                      *SPM_SDIO_SLV_SRAM_PD |= (1 << 16); /* SDIO_SLV_SRAM_MEM_ISO_EN bit : 16 */
+    373                      hal_gpt_delay_us(1);
+    374                      *SPM_SDIO_SLV_SRAM_PD |= (1 << 0);  /* SDIO_SLV_SRAM_PD bit : 0 */
+    375                      hal_gpt_delay_us(1);
+    376          
+    377                      *SPM_SDIO_SLV_PWR_CON = 0x1E;
+    378                      hal_gpt_delay_us(1);
+    379                      *SPM_SDIO_SLV_PWR_CON = 0x1A;
+    380                      hal_gpt_delay_us(1);
+    381                      *SPM_SDIO_SLV_PWR_CON = 0x12;
+    382                      hal_gpt_delay_us(1);
+    383                      hal_clock_disable(HAL_CLOCK_CG_SW_SPM);
+    384                  } else {
+    385                      if ((*SPM_PWR_STATUS & 0x8) == 0) {
+    386                          if ((*SPM_PWR_STATUS & 0x8) != 0) {
+    387                              return;
+    388                          }
+    389                          hal_clock_enable(HAL_CLOCK_CG_SW_SPM);
+    390                          *SPM_RESOURCE_CONTROL_0 |= 0x01000000;   //Force on SDIO MTCMOS
+    391                          //SDIO_SLV MTCMOS ON
+    392                          *SPM_SDIO_SLV_PWR_CON = 0x12;
+    393                          hal_gpt_delay_us(1);
+    394                          *SPM_SDIO_SLV_PWR_CON = 0x16;
+    395                          hal_gpt_delay_us(1);
+    396                          *SPM_SDIO_SLV_PWR_CON = 0x1E;
+    397                          hal_gpt_delay_us(1);
+    398          
+    399                          *SPM_SDIO_SLV_SRAM_PD &= (0xFFFEFFFF);   /* SDIO_SLV_SRAM_MEM_ISO_EN bit : 16 */
+    400                          hal_gpt_delay_us(1);
+    401                          *SPM_SDIO_SLV_SRAM_PD &= (0xFFFFFFFE);    /* SDIO_SLV_SRAM_PD bit : 0 */
+    402                          hal_gpt_delay_us(1);
+    403          
+    404                          *SPM_SDIO_SLV_PWR_CON = 0x0E;
+    405                          hal_gpt_delay_us(1);
+    406                          *SPM_SDIO_SLV_PWR_CON = 0x0C;
+    407                          hal_gpt_delay_us(1);
+    408                          *SPM_SDIO_SLV_PWR_CON = 0x1C;
+    409                          hal_gpt_delay_us(1);
+    410                          *SPM_SDIO_SLV_PWR_CON = 0x1D;
+    411                          hal_gpt_delay_us(1);
+    412                          *SPM_SDIO_SLV_PWR_CON = 0x0D;
+    413                          hal_gpt_delay_us(1);
+    414                          hal_clock_disable(HAL_CLOCK_CG_SW_SPM);
+    415                      }
+    416                  }
+    417                  return;
+    418              }
+    419          }
+    420          
+    421          void manual_spm_write_im(uint32_t addr, uint32_t data)
+    422          {
+    423              *SPM_PCM_IM_HOST_RW_PTR = 0x01010000 | addr;
+    424              *SPM_PCM_IM_HOST_RW_DAT = data;
+    425              return;
+    426          }
+    427          
+    428          uint32_t manual_spm_read_im(uint32_t addr)
+    429          {
+    430              uint32_t data;
+    431              *SPM_PCM_IM_HOST_RW_PTR = 0x01000000 | addr;
+    432              data = *SPM_PCM_IM_HOST_RW_DAT;
+    433              *SPM_PCM_IM_HOST_RW_PTR = 0;
+    434              return (data);
+    435          }
+    436          
+    437          void spm_mask_wakeup_source(uint32_t wakeup_source)
+    438          {
+    439              if(wakeup_source == HAL_SLEEP_MANAGER_WAKEUP_SOURCE_ALL) {
+    440                  *SPM_WAKEUP_SOURCE_MASK = 0xFF;
+    441              }else {
+    442                  *SPM_WAKEUP_SOURCE_MASK |= (1<<wakeup_source);
+    443              }
+    444          }
+    445          
+    446          void spm_unmask_wakeup_source(uint32_t wakeup_source)
+    447          {
+    448              if(wakeup_source == HAL_SLEEP_MANAGER_WAKEUP_SOURCE_ALL) {
+    449                  *SPM_WAKEUP_SOURCE_MASK = 0x00;
+    450              }else {
+    451                  *SPM_WAKEUP_SOURCE_MASK &= ~(1<<wakeup_source);
+    452              }       
+    453          }
+    454          
+    455          #endif
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   manual_spm_read_im
+       0   manual_spm_write_im
+       8   spm_control_mtcmos
+         8   -> spm_control_mtcmos_internal
+       8   spm_control_mtcmos_internal
+         0   -> hal_clock_disable
+         8   -> hal_clock_enable
+         8   -> hal_gpt_delay_us
+         8   -> pmu_set_register_value
+    2472   spm_init
+      2472   -> hal_clock_disable
+      2472   -> hal_clock_enable
+      2472   -> hal_gpt_delay_us
+      2472   -> log_hal_error_internal
+      2472   -> log_hal_warning_internal
+      2472   -> manual_spm_read_im
+      2472   -> manual_spm_write_im
+      2472   -> memcmp
+      2472   -> printf
+       8   spm_kick_start
+         8   -> hal_clock_enable
+         8   -> hal_gpt_delay_us
+       0   spm_mask_wakeup_source
+       0   spm_unmask_wakeup_source
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable15
+       4  ??DataTable15_1
+       4  ??DataTable15_10
+       4  ??DataTable15_11
+       4  ??DataTable15_12
+       4  ??DataTable15_13
+       4  ??DataTable15_14
+       4  ??DataTable15_15
+       4  ??DataTable15_16
+       4  ??DataTable15_17
+       4  ??DataTable15_18
+       4  ??DataTable15_19
+       4  ??DataTable15_2
+       4  ??DataTable15_20
+       4  ??DataTable15_3
+       4  ??DataTable15_4
+       4  ??DataTable15_5
+       4  ??DataTable15_6
+       4  ??DataTable15_7
+       4  ??DataTable15_8
+       4  ??DataTable15_9
+      32  ?_0
+      16  ?_1
+      24  ?_2
+      28  ?_3
+      24  ?_4
+      32  ?_5
+      16  manual_spm_read_im
+      12  manual_spm_write_im
+       8  mtcmos_conn_resource_cnt
+          mtcmos_sdio_resource_cnt
+      32  pcm_event_vector_parameter
+     130  spm_control_mtcmos
+     512  spm_control_mtcmos_internal
+    2448  spm_im
+     428  spm_init
+     120  spm_kick_start
+      26  spm_mask_wakeup_source
+      28  spm_unmask_wakeup_source
+      12  -- Other
+
+ 
+     8 bytes in section .bss
+    32 bytes in section .rodata
+   120 bytes in section .tcm_code
+ 3 852 bytes in section .text
+ 
+ 3 972 bytes of CODE  memory
+    32 bytes of CONST memory
+     8 bytes of DATA  memory
+
+Errors: none
+Warnings: 1

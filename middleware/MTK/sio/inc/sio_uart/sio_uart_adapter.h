@@ -1,0 +1,64 @@
+/* Copyright Statement:
+ *
+ * (C) 2005-2016  MediaTek Inc. All rights reserved.
+ *
+ * This software/firmware and related documentation ("MediaTek Software") are
+ * protected under relevant copyright laws. The information contained herein
+ * is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
+ * Without the prior written permission of MediaTek and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
+ * and information contained herein, in whole or in part, shall be strictly prohibited.
+ * You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
+ * if you have agreed to and been bound by the applicable license agreement with
+ * MediaTek ("License Agreement") and been granted explicit permission to do so within
+ * the License Agreement ("Permitted User").  If you are not a Permitted User,
+ * please cease any access or use of MediaTek Software immediately.
+ * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
+ * THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
+ * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
+ * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
+ * SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
+ * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
+ * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
+ * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
+ */
+
+#ifndef __SIO_UART_ADAPTER_H__
+#define __SIO_UART_ADAPTER_H__
+
+#include "sio_uart_internal.h"
+
+extern uint32_t sio_uart_queue_create(uint32_t queue_length,uint32_t item_size);
+extern sio_uart_ret_t sio_uart_queue_send(uint32_t q_id, void* data);
+extern sio_uart_ret_t sio_uart_queue_send_from_isr(uint32_t q_id, void* data);
+extern sio_uart_ret_t sio_uart_queue_send_to_front_from_isr(uint32_t q_id, void* data);
+extern int32_t sio_uart_queue_receive_no_wait(uint32_t q_id, void* data);
+extern int32_t sio_uart_queue_receive_wait(uint32_t q_id, void* data, uint32_t delay_time);
+extern uint16_t sio_uart_queue_get_item_num(uint32_t q_id);
+extern uint32_t sio_uart_mutex_create(void);
+extern uint32_t sio_uart_mutex_lock(uint32_t mutex_id);
+extern uint32_t sio_uart_mutex_unlock(uint32_t mutex_id);
+extern void* sio_uart_mem_alloc(uint32_t size);
+extern void sio_uart_mem_free(void *buf);
+extern uint32_t sio_uart_semaphore_create( uint32_t uxMaxCount, uint32_t uxInitialCount);
+extern uint32_t sio_uart_semaphore_take(uint32_t semaphore_id);
+extern sio_uart_ret_t sio_uart_semaphore_give(uint32_t semaphore_id);
+extern sio_uart_ret_t sio_uart_semaphore_give_from_isr(uint32_t semaphore_id);
+    
+
+extern sio_uart_ret_t sio_uart_timer_reset(sio_uart_timer_t timer);
+extern sio_uart_ret_t sio_uart_timer_reset_from_isr(sio_uart_timer_t timer);
+extern sio_uart_timer_status_t sio_uart_timer_get_status(sio_uart_timer_t timer);
+//extern sio_uart_ret_t sio_uart_timer_modem_exception_timeout_handle(void);
+//extern sio_uart_ret_t sio_uart_timer_ut_timeout_handle(void);
+#endif /* __SIO_UART_ADAPTER_H__ */
+

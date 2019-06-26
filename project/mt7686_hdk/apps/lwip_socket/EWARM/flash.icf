@@ -1,0 +1,106 @@
+/*###ICF### Section handled by ICF editor, don't touch! ****/
+/*-Editor annotation file-*/
+/* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" */
+/*-Specials-*/
+define symbol __ICFEDIT_intvec_start__ = 0x04008000;
+/*-Memory Regions-*/
+
+define symbol __ICFEDIT_region_BL_start__ = 0x08002000;
+define symbol __ICFEDIT_region_BL_end__   = 0x08011FFF;
+define symbol __ICFEDIT_region_PWR_ROM_start__ = 0x083FF000;
+define symbol __ICFEDIT_region_PWR_ROM_end__   = 0X08400000;
+define symbol __ICFEDIT_region_ROM_start__ = 0x08012000;
+define symbol __ICFEDIT_region_ROM_end__   = 0x080EF000;
+define symbol __ICFEDIT_region_RAM_start__ = 0x00000000;
+define symbol __ICFEDIT_region_RAM_end__   = 0x00400000;
+define symbol __ICFEDIT_region_VRAM_start__ = 0x10000000;
+define symbol __ICFEDIT_region_VRAM_end__   = 0x10400000;
+define symbol __ICFEDIT_region_SYSRAM_start__ = 0x04200000;
+define symbol __ICFEDIT_region_SYSRAM_end__   = 0x04259C00;
+define symbol __ICFEDIT_region_VSYSRAM_start__ = 0x14200000;
+define symbol __ICFEDIT_region_VSYSRAM_end__   = 0x14259C00;
+define symbol __ICFEDIT_region_TCM_start__ = 0x04008000;
+define symbol __ICFEDIT_region_TCM_end__   = 0x04018000;
+/*-Sizes-*/
+define symbol __ICFEDIT_size_cstack__ = 0x1000;
+define symbol __ICFEDIT_size_heap__   = 0x800;
+/**** End of ICF editor section. ###ICF###*/
+
+define memory mem with size = 4G;
+define region BL_region          = mem:[from __ICFEDIT_region_BL_start__    to __ICFEDIT_region_BL_end__];
+define region PWR_ROM_region   = mem:[from __ICFEDIT_region_PWR_ROM_start__   to __ICFEDIT_region_PWR_ROM_end__];
+define region ROM_region         = mem:[from __ICFEDIT_region_ROM_start__   to __ICFEDIT_region_ROM_end__];
+define region RAM_region         = mem:[from __ICFEDIT_region_RAM_start__   to __ICFEDIT_region_RAM_end__];
+define region VRAM_region     = mem:[from __ICFEDIT_region_VRAM_start__   to __ICFEDIT_region_VRAM_end__];
+define region SYSRAM_region      = mem:[from __ICFEDIT_region_SYSRAM_start__   to __ICFEDIT_region_SYSRAM_end__];
+define region VSYSRAM_region     = mem:[from __ICFEDIT_region_VSYSRAM_start__   to __ICFEDIT_region_VSYSRAM_end__];
+define region TCM_region         = mem:[from __ICFEDIT_region_TCM_start__   to __ICFEDIT_region_TCM_end__];
+
+define block CSTACK    with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+define block HEAP      with alignment = 8, size = __ICFEDIT_size_heap__     { };
+
+define block VRAM_BLOCK with fixed order { section .ram_code,
+                                          section .ram_rodata,
+                                          readwrite 
+                                        };
+define block RAM_BLOCK with fixed order {
+                                          section .noncached_ram_rwdata,
+                                          section .noncached_ram_zidata                                    
+                                        };
+
+define block VSYSRAM_BLOCK with fixed order { 
+                                          section .sysram_code,
+                                          section .sysram_rodata,
+                                          section .cached_sysram_rwdata,
+                                          section .cached_sysram_zidata
+                                        };
+define block SYSRAM_BLOCK with fixed order {section .noncached_sysram_rwdata,
+                                            section .noncached_sysram_zidata                                     
+                                        };
+                                        
+/*define block PWR_BIN_BLOCK with fixed order {
+                              section .pwrfw
+                              };*/
+
+define block TCM_BLOCK with fixed order { section .intvec, 
+                                          section .tcm_code,
+                                          section .tcm_rodata,
+                                          section .tcm_rwdata,
+                                          section .tcm_zidata
+                                        };
+                                        
+keep {section .pwrfw};
+
+initialize by copy { section .intvec };
+initialize by copy { section .ram_code };
+initialize by copy { section .ram_rodata };
+initialize by copy { section .noncached_ram_rwdata };
+initialize by copy { section .sysram_code };
+initialize by copy { section .sysram_rodata };
+initialize by copy { section .cached_sysram_rwdata };
+initialize by copy { section .noncached_sysram_rwdata };
+initialize by copy { readwrite };
+initialize by copy { section .tcm_code };
+initialize by copy { section .tcm_rodata };
+initialize by copy { section .tcm_rwdata };
+
+do not initialize  { section .noinit };
+
+place in BL_region             { section .bootloader };
+/*place at start of PWR_ROM_region  { block PWR_BIN_BLOCK };*/
+
+place at start of ROM_region   { section .reset_handler };
+place in ROM_region            { readonly };
+
+place in VRAM_region            { block VRAM_BLOCK };
+place at end of RAM_region     { block RAM_BLOCK };
+
+place in VSYSRAM_region           { block VSYSRAM_BLOCK };
+place at end of SYSRAM_region     { block SYSRAM_BLOCK };
+
+place at start of TCM_region   { block TCM_BLOCK };
+place in TCM_region            { block HEAP };
+place at end of TCM_region     { block CSTACK };     
+ 
+check that size(block VRAM_BLOCK) + size(block RAM_BLOCK) <= size(RAM_region);
+check that size(block VSYSRAM_BLOCK) + size(block SYSRAM_BLOCK) <= size(SYSRAM_region);

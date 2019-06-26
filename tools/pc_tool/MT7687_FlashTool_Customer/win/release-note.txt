@@ -1,0 +1,47 @@
+/*  v major.minor.
+ * Release Notes:
+ * v1.0.0 alpha version.
+ * v1.0.1 change ated.bin
+ * v1.0.1.1 (disable scramble feature)     
+ *       A. if license is written, write again will report error rather than return ok.
+ * v1.0.1.2  (open scramble feature)
+ * v1.0.2  
+ *      A. add efuse advanced page.
+ *      B. add shortcut to adv-efuse, scramble feature.
+ * v1.0.3
+ *      A. remove verifing flash jedec id in ated, add the verification in GUI by adding a xml.
+ *      B. some optimization in GUI.
+ * v1.0.3.1
+ *      A. add auth key(security). change GUI,Lib.ATED.
+ *      B. Disable feature: get free efuse blocks and burn out all free blocks.
+ * v1.0.3.2
+ *      A. GUI: Add write BT MAC.
+ *      B. GUI: Modify WLAN to Custom Setting.
+ *      C. GUI: read new flash size from xml file(white list).
+ * v1.0.4
+ *      A. equal to v1.0.3.2 for SDK release
+ * v1.0.5
+ *      A. Add split commands in console mode.
+ *      B. support a new type flash.
+ * v1.0.6 & v1.0.5.1(temp)
+ *      A. Amazon add external flash. code flow change.
+ *      B. add partition partial scramble and CMAC security solution. (Not opened)
+ *      C. Read flash size form white list xml.
+ *      D. UI change for scramble key part.
+ *      E. Enable feature: get free efuse blocks and burn out all free blocks.
+ *      F. Console mode: add efuse command.
+ *      G. Add disable Wifi on advanced efuse.
+ * v1.0.7
+ *      A. add partition partial scramble and CMAC security solution. (Not opened)
+ * v1.0.8
+ *      A. Open partition partial scramble and CMAC security solution. 
+ *      B. Update ated.bin to support 3M baud rate. 
+ * v1.0.9
+ *      A. Console mode: add skip-erase flag.
+ * v1.0.10
+ *      A. update ated.bin for bugs: erase over boundary.
+ * v1.0.11
+ *      A. update ated.bin for bugs: erase over boundary(64K alignment issue).
+ * v1.0.12
+ *      A. console mode optimization: 1. split stdout and stderr. 2. ated use absolute path.
+*/
