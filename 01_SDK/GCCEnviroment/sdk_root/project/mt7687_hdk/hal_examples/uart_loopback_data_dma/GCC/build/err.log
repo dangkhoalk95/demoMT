@@ -1,5 +1,0 @@
-arm-none-eabi-gcc.exe: error: ../../../../../project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/build/driver/board/mt76x7_hdk/external_flash/src/bsp_flash_config.o: No such file or directory
-arm-none-eabi-gcc.exe: error: ../../../../../project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7687_hdk/hal_examples/uart_loopback_data_dma/src/main.o: No such file or directory
-arm-none-eabi-gcc.exe: error: ../../../../../project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7687_hdk/hal_examples/uart_loopback_data_dma/src/system_mt7687.o: No such file or directory
-arm-none-eabi-gcc.exe: error: ../../../../../project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/syscalls.o: No such file or directory
-arm-none-eabi-gcc.exe: error: ../../../../../project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/build/project/mt7687_hdk/hal_examples/uart_loopback_data_dma/GCC/startup_mt7687.o: No such file or directory
