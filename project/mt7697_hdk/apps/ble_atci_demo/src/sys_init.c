@@ -1,159 +1,102 @@
 /* Copyright Statement:
  *
- * (C) 2017  Airoha Technology Corp. All rights reserved.
+ * (C) 2005-2016  MediaTek Inc. All rights reserved.
  *
- * This software/firmware and related documentation ("Airoha Software") are
+ * This software/firmware and related documentation ("MediaTek Software") are
  * protected under relevant copyright laws. The information contained herein
- * is confidential and proprietary to Airoha Technology Corp. ("Airoha") and/or its licensors.
- * Without the prior written permission of Airoha and/or its licensors,
- * any reproduction, modification, use or disclosure of Airoha Software,
+ * is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
+ * Without the prior written permission of MediaTek and/or its licensors,
+ * any reproduction, modification, use or disclosure of MediaTek Software,
  * and information contained herein, in whole or in part, shall be strictly prohibited.
- * You may only use, reproduce, modify, or distribute (as applicable) Airoha Software
+ * You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
  * if you have agreed to and been bound by the applicable license agreement with
- * Airoha ("License Agreement") and been granted explicit permission to do so within
+ * MediaTek ("License Agreement") and been granted explicit permission to do so within
  * the License Agreement ("Permitted User").  If you are not a Permitted User,
- * please cease any access or use of Airoha Software immediately.
+ * please cease any access or use of MediaTek Software immediately.
  * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT AIROHA SOFTWARE RECEIVED FROM AIROHA AND/OR ITS REPRESENTATIVES
- * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. AIROHA EXPRESSLY DISCLAIMS ANY AND ALL
+ * THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
+ * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
  * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES AIROHA PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
+ * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
  * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH AIROHA SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
+ * SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
  * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
  * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN AIROHA SOFTWARE. AIROHA SHALL ALSO NOT BE RESPONSIBLE FOR ANY AIROHA
+ * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
  * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND AIROHA'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO AIROHA SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT AIROHA'S OPTION, TO REVISE OR REPLACE AIROHA SOFTWARE AT ISSUE,
+ * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
+ * CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
+ * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
  * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * AIROHA FOR SUCH AIROHA SOFTWARE AT ISSUE.
+ * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
  */
- 
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-/* Kernel includes. */
-#include <FreeRTOS.h>
-#include <task.h>
-#include <os.h>
+#include "mt7687.h"
+#include "mt7687_cm4_hw_memmap.h"
+#include "system_mt7687.h"
 
-#include <top.h>
-#include <hal_gpio.h>
-#include <hal_flash.h>
-#include <syslog.h>
+#include "FreeRTOS.h"
 
-#define CFG_FPGA 0
-/*PMU driver init setting for lower power*/
-#if defined(MTK_HAL_LOWPOWER_ENABLE)
-#include <hal_lp.h>
-#endif
-
-#include <sys.h>
-#include <connsys_driver.h>
-
-#include "io_def.h"
-#if defined(MTK_MINICLI_ENABLE)
-#include "cli_def.h"
-#endif
-
-#include <nvdm.h>
-
+#include "hal.h"
+#include "syslog.h"
+#include "top.h"
+#include "hal_lp.h"
+#include "connsys_driver.h"
 #include "sys_init.h"
-
-#if defined(HAL_TRNG_MODULE_ENABLED)
-#include <hal_trng.h>
-#endif
-#include "hal_cache.h"
+#include "bsp_gpio_ept_config.h"
 #include "flash_map.h"
 
-#if configUSE_TICKLESS_IDLE == 2
-#include "hal_sleep_manager.h"
+/* Enable NVDM feature */
+#ifdef MTK_NVDM_ENABLE
+#include "nvdm.h"
+#endif
+
 extern void tickless_init(void);
+
+/**
+* @brief       This function is low-level libc implementation, which is used for printf family.
+* @param[in]   ch: the character that will be put into uart port.
+* @return      The character as input.
+*/
+/* This option is to enable and disable CLI (command line interface) engine. */
+#ifndef MTK_MINICLI_ENABLE
+/* Predefined MACRO of gcc */
+#ifdef __GNUC__
+int __io_putchar(int ch)
+#else
+int fputc(int ch, FILE *f)
+#endif
+{
+    hal_uart_put_char(HAL_UART_0, ch);
+    if (ch == '\n') {
+        hal_uart_put_char(HAL_UART_0, '\r');
+    }
+    return ch;
+}
 #endif
 
-void user_check_default_value(void);
-
-/* Refer to LinkIt_for_RTOS_System_Log_Developers_Guide.pdf for more detail */
-#ifndef MTK_DEBUG_LEVEL_NONE
-
-log_create_module(main, PRINT_LEVEL_ERROR);
-
-LOG_CONTROL_BLOCK_DECLARE(main);
-LOG_CONTROL_BLOCK_DECLARE(common);
-LOG_CONTROL_BLOCK_DECLARE(hal);
-LOG_CONTROL_BLOCK_DECLARE(lwip);
-LOG_CONTROL_BLOCK_DECLARE(minisupp);
-LOG_CONTROL_BLOCK_DECLARE(inband);
-LOG_CONTROL_BLOCK_DECLARE(wifi);
-LOG_CONTROL_BLOCK_DECLARE(BT);
-LOG_CONTROL_BLOCK_DECLARE(BTMM);
-LOG_CONTROL_BLOCK_DECLARE(BTL2CAP);
-LOG_CONTROL_BLOCK_DECLARE(BTHCI);
-LOG_CONTROL_BLOCK_DECLARE(BTIF);
-LOG_CONTROL_BLOCK_DECLARE(connsys);
-#ifdef __MTK_BT_MESH_ENABLE__ 
-LOG_CONTROL_BLOCK_DECLARE(mesh_network);
-LOG_CONTROL_BLOCK_DECLARE(mesh_transport);
-LOG_CONTROL_BLOCK_DECLARE(mesh_access);
-LOG_CONTROL_BLOCK_DECLARE(mesh_model);
-LOG_CONTROL_BLOCK_DECLARE(mesh_config);
-LOG_CONTROL_BLOCK_DECLARE(mesh_bearer);
-LOG_CONTROL_BLOCK_DECLARE(mesh_provision);
-LOG_CONTROL_BLOCK_DECLARE(mesh_beacon);
-LOG_CONTROL_BLOCK_DECLARE(mesh_proxy);
-LOG_CONTROL_BLOCK_DECLARE(mesh_utils);
-LOG_CONTROL_BLOCK_DECLARE(mesh_bearer_gatt);
-LOG_CONTROL_BLOCK_DECLARE(mesh_middleware);
-LOG_CONTROL_BLOCK_DECLARE(mesh_friend);
-LOG_CONTROL_BLOCK_DECLARE(mesh_app);
-LOG_CONTROL_BLOCK_DECLARE(mesh_must);
-#endif
-
-
-log_control_block_t *syslog_control_blocks[] = {
-    &LOG_CONTROL_BLOCK_SYMBOL(main),
-    &LOG_CONTROL_BLOCK_SYMBOL(common),
-    &LOG_CONTROL_BLOCK_SYMBOL(hal),
-    &LOG_CONTROL_BLOCK_SYMBOL(lwip),
-    &LOG_CONTROL_BLOCK_SYMBOL(minisupp),
-    &LOG_CONTROL_BLOCK_SYMBOL(inband),
-    &LOG_CONTROL_BLOCK_SYMBOL(wifi),
-    &LOG_CONTROL_BLOCK_SYMBOL(BT),
-    &LOG_CONTROL_BLOCK_SYMBOL(BTMM),
-    &LOG_CONTROL_BLOCK_SYMBOL(BTL2CAP),
-    &LOG_CONTROL_BLOCK_SYMBOL(BTHCI),
-    &LOG_CONTROL_BLOCK_SYMBOL(BTIF),
-    &LOG_CONTROL_BLOCK_SYMBOL(connsys),
-#ifdef __MTK_BT_MESH_ENABLE__ 
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_network),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_transport),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_access),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_model),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_config),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_bearer),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_provision),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_beacon),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_proxy),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_utils),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_bearer_gatt),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_middleware),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_friend),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_app),
-    &LOG_CONTROL_BLOCK_SYMBOL(mesh_must),
-#endif
-    NULL
-};
-#endif
-
+/**
+* @brief       This function is to config system clock.
+* @param[in]   None.
+* @return      None.
+*/
 static void SystemClock_Config(void)
 {
+    /* Initialize XTAL, and system runs at default frequency */
     top_xtal_init();
+
+    /* Enable MCU clock to 192MHz */
+    cmnCpuClkConfigureTo192M();
+
+    /*Enable flash clock to 64MHz*/
+    cmnSerialFlashClkConfTo64M();
 }
 
 /**
@@ -198,29 +141,23 @@ static int32_t cache_enable(hal_cache_size_t cache_size)
     return 0;
 }
 
+/**
+* @brief       This function is to setup system hardware, such as increase system clock, uart init etc.
+* @param[in]   None.
+* @return      None.
+*/
 static void prvSetupHardware(void)
 {
-    /*PMU driver init setting for lower power*/
-#if defined(MTK_HAL_LOWPOWER_ENABLE)
-
-    /* Handle low power interrupt */
-    hal_lp_handle_intr();
-
-    if ((hal_lp_get_wic_status()) || (1 == hal_lp_get_wic_wakeup())) {
-        /* N9 MUST be active for clock switch and pinmux config*/
-        /* Wakeup N9 by connsys ownership */
-        connsys_open();
-        connsys_close();
+    /* cache init */
+    if (cache_enable(HAL_CACHE_SIZE_32KB) < 0) {
+        LOG_E(common, "cache enable failed");
     }
-#endif
 
-#if (CFG_FPGA == 0)
-    /* Enable MCU clock to 192MHz */
-    cmnCpuClkConfigureTo192M();
-
-    /*Enable flash clock to 64MHz*/
-    cmnSerialFlashClkConfTo64M();
-#endif /* CFG_FPGA = 0 */
+    /* bsp_ept_gpio_setting_init() under driver/board/mt76x7_hdk/ept will initialize the GPIO settings
+     * generated by easy pinmux tool (ept). ept_*.c and ept*.h are the ept files and will be used by
+     * bsp_ept_gpio_setting_init() for GPIO pinumux setup.
+     */
+    bsp_ept_gpio_setting_init();
 
     /* low power init */
 #if configUSE_TICKLESS_IDLE == 2
@@ -229,53 +166,25 @@ static void prvSetupHardware(void)
     }
 #endif
 
+    /* initialize logging port */
+/* Enable MIMICLI feature */
+#ifdef MTK_MINICLI_ENABLE
     bsp_io_def_uart_init();
-
-    if (cache_enable(HAL_CACHE_SIZE_32KB) < 0) {
-        LOG_E(common, "cache enable failed");
-    }
+#else
+    log_uart_init(HAL_UART_0);
+#endif
 
     hal_flash_init();
 }
 
-
-/* Refer to LinkIt_for_RTOS_System_Log_Developers_Guide.pdf for more detail */
-#ifndef MTK_DEBUG_LEVEL_NONE
-
-static void syslog_config_save(const syslog_config_t *config)
-{
-    char *syslog_filter_buf;
-
-    syslog_filter_buf = (char *)pvPortMalloc(SYSLOG_FILTER_LEN);
-    configASSERT(syslog_filter_buf != NULL);
-    syslog_convert_filter_val2str((const log_control_block_t **)config->filters, syslog_filter_buf);
-    nvdm_write_data_item("common", "syslog_filters", \
-                         NVDM_DATA_ITEM_TYPE_STRING, (const uint8_t *)syslog_filter_buf, strlen(syslog_filter_buf));
-    vPortFree(syslog_filter_buf);
-}
-
-static uint32_t syslog_config_load(syslog_config_t *config)
-{
-    uint32_t sz = SYSLOG_FILTER_LEN;
-    char *syslog_filter_buf;
-
-    syslog_filter_buf = (char *)pvPortMalloc(SYSLOG_FILTER_LEN);
-    configASSERT(syslog_filter_buf != NULL);
-    nvdm_read_data_item("common", "syslog_filters", (uint8_t *)syslog_filter_buf, &sz);
-    syslog_convert_filter_str2val(config->filters, syslog_filter_buf);
-    vPortFree(syslog_filter_buf);
-
-    return 0;
-}
-
-#endif
-
 /**
- * Initialize C library random function using HAL TRNG.
- */
+* @brief       This function is to get random seed.
+* @param[in]   None.
+* @return      None.
+*/
 static void _main_sys_random_init(void)
 {
-    /*This option is to enable TRNG(Ture Random Number Generator).*/
+/*This option is to enable TRNG(Ture Random Number Generator).*/
 #if defined(HAL_TRNG_MODULE_ENABLED)
     uint32_t            seed;
     hal_trng_status_t   s;
@@ -284,7 +193,6 @@ static void _main_sys_random_init(void)
 
     if (s == HAL_TRNG_STATUS_OK) {
         s = hal_trng_get_generated_random_number(&seed);
-
     }
 
     if (s == HAL_TRNG_STATUS_OK) {
@@ -292,39 +200,30 @@ static void _main_sys_random_init(void)
     }
 
     if (s != HAL_TRNG_STATUS_OK) {
-        printf("trng init failed\n");
-    } else {
-
+        LOG_I(common, "trng init failed\n");
     }
 #endif /* HAL_TRNG_MODULE_ENABLED */
 }
 
+/**
+* @brief       This function is to do system initialization, eg: system clock, hardware and random seed.
+* @param[in]   None.
+* @return      None.
+*/
 void system_init(void)
 {
-    time_t      t       = 12345;
-
-    /* SystemClock Config */
+    /* config system clock */
     SystemClock_Config();
 
-    /* Configure the hardware ready to run the test. */
+    /* do infrastructure initialization */
     prvSetupHardware();
 
+/* Enable NVDM feature */
+#ifdef MTK_NVDM_ENABLE
     nvdm_init();
-    user_check_default_value();
-
-    /* Refer to LinkIt_for_RTOS_System_Log_Developers_Guide.pdf for more detail */
-#ifndef MTK_DEBUG_LEVEL_NONE
-    log_init(syslog_config_save, syslog_config_load, syslog_control_blocks);
 #endif
 
-    /* workaround for NSTP */
-    ctime(&t);
-
+    /* generate random seed */
     _main_sys_random_init();
-
-
-
-    LOG_I(common, "FreeRTOS Running");
 }
-
 
