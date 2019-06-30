@@ -1,5 +1,5 @@
 IC_CONFIG                           = mt7697
-BOARD_CONFIG                        = mt76x7_hdk
+BOARD_CONFIG                        = mt7697_hdk
 MTK_FW_VERSION                      = mt7697_fw
 MTK_FOTA_ENABLE                     = y
 MTK_DEBUG_LEVEL                     = info

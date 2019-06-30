@@ -314,14 +314,14 @@ int main(void)
     LOG_I(app, "main()");
 
     /* Wi-Fi must be initialized for BLE start-up */
-    wifi_connection_register_event_handler(WIFI_EVENT_IOT_INIT_COMPLETE , _wifi_event_handler);
+    // wifi_connection_register_event_handler(WIFI_EVENT_IOT_INIT_COMPLETE , _wifi_event_handler);
 
-    wifi_config_t config = {0};
-    config.opmode = WIFI_MODE_STA_ONLY;
-    wifi_init(&config, NULL);
+    // wifi_config_t config = {0};
+    // config.opmode = WIFI_MODE_STA_ONLY;
+    // wifi_init(&config, NULL);
 
-    lwip_tcpip_config_t tcpip_config = {{0}, {0}, {0}, {0}, {0}, {0}};
-    lwip_tcpip_init(&tcpip_config, WIFI_MODE_STA_ONLY);
+    // lwip_tcpip_config_t tcpip_config = {{0}, {0}, {0}, {0}, {0}, {0}};
+    // lwip_tcpip_init(&tcpip_config, WIFI_MODE_STA_ONLY);
 
     bt_create_task();
     bt_common_init();

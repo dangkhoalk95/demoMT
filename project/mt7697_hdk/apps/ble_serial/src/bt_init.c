@@ -177,7 +177,7 @@ void bt_mm_init()
     bt_memory_init_packet(BT_MEMORY_RX_BUFFER, rx_buf, BT_RX_BUF_SIZE);
     bt_memory_init_control_block(BT_MEMORY_CONTROL_BLOCK_TIMER, timer_cb_buf, BT_TIMER_BUF_SIZE);
     bt_memory_init_control_block(BT_MEMORY_CONTROL_BLOCK_LE_CONNECTION, connection_cb_buf,
-                                  BT_CONNECTION_BUF_SIZE);
+                                BT_CONNECTION_BUF_SIZE);
 }
 
 /**
