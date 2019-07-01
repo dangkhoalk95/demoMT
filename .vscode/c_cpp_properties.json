@@ -1,0 +1,42 @@
+{
+    "env":{
+        "SRC_DIR":"./"
+    },
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${SRC_DIR}/kernel/rtos/FreeRTOS/Source/include/",
+                "${SRC_DIR}/middleware/third_party/lwip/ports/include/",
+                "${SRC_DIR}/middleware/third_party/lwip/src/include/",
+                "${SRC_DIR}/kernel/rtos/FreeRTOS/Source/portable/GCC/ARM_CM4F/",
+                "${SRC_DIR}/middleware/MTK/nvdm/inc/",
+                "${SRC_DIR}/middleware/MTK/wifi_service/combo/inc/",
+                "${SRC_DIR}/prebuilt/middleware/MTK/wifi_stack/rom/e2/inc/rom/",
+                "${SRC_DIR}/middleware/MTK/connsys/inc/",
+                "${SRC_DIR}/kernel/service/inc/",
+                "${SRC_DIR}/driver/chip/inc/",
+                "${SRC_DIR}/driver/chip/mt7687/inc/",
+                "${SRC_DIR}/driver/CMSIS/Device/MTK/mt7687/Include/",
+                "${SRC_DIR}/driver/CMSIS/Include/",
+                "${SRC_DIR}/prebuilt/middleware/MTK/wifi_stack/rom/e2/inc/",
+                "${SRC_DIR}/middleware/MTK/dhcpd/inc/",
+                "${SRC_DIR}/middleware/third_party/lwip/src/include/lwip/",
+                "${SRC_DIR}/driver/board/mt7686_hdk/util/inc/",
+                "${SRC_DIR}/driver/board/mt76x7_hdk/ept/inc/",
+                "${SRC_DIR}/prebuilt/middleware/MTK/bluetooth/inc/",
+                "${SRC_DIR}/prebuilt/middleware/MTK/mesh/inc/",
+                "${SRC_DIR}/prebuilt/middleware/MTK/mesh/inc/model/",
+                "${SRC_DIR}/driver/board/component/led/inc/",
+                "${SRC_DIR}/driver/chip/mt7687/src/common/include/"
+            ],
+            "defines": [],
+            "compilerPath": "${SRC_DIR}/tools/gcc/linux/gcc-arm-none-eabi/bin/arm-none-eabi-gcc*",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}
