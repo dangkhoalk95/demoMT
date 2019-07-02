@@ -1,0 +1,38 @@
+{"env": {"SDK_DIR":"../../../../"},
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/inc/",
+                
+                "${SDK_DIR}/prebuilt/middleware/MTK/bluetooth/inc/",
+
+                "${SDK_DIR}/middleware/MTK/bt_notify/inc/",
+                "${SDK_DIR}/middleware/MTK/wifi_service/combo/inc/",
+                "${SDK_DIR}/middleware/MTK/connsys/inc/",
+                "${SDK_DIR}/middleware/MTK/nvdm/inc/",
+
+                "${SDK_DIR}/kernel/rtos/FreeRTOS/Source/portable/GCC/ARM_CM4F/",
+                "${SDK_DIR}/kernel/rtos/FreeRTOS/Source/include/",
+                "${SDK_DIR}/kernel/service/inc/",
+                
+                "${SDK_DIR}/driver/chip/inc/",
+                "${SDK_DIR}/driver/chip/mt7686/inc/",
+                "${SDK_DIR}/driver/CMSIS/Device/MTK/mt7687/Include/",
+                "${SDK_DIR}/driver/CMSIS/Device/MTK/mt7686/Include/",
+                "${SDK_DIR}/driver/CMSIS/Include/",
+                
+                "${SDK_DIR}/middleware/third_party/lwip/src/include/",
+                "${SDK_DIR}/middleware/third_party/lwip/ports/include/"
+
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
