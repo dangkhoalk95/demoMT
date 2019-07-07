@@ -1,0 +1,8 @@
+- Write a demo with BAS service 
+- Write a demo with Serial service
+- Write a demo With 2 service Serial and BAS 
+- Write a demo 2 service 
+- Merger it with atci
+- Write a cmd for 
+ + Change adv interval 
+ + Change device name

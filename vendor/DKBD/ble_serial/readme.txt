@@ -1,16 +1,17 @@
-BT serial module usage guide, rewrite base on bt_notify (middleware/MTK/bt_notify)
+ble_bas module usage guide
 
-Brief:    
-Usage:          GCC: Include the module with "include $(SOURCE_DIR)/vendor/DKBD/ble_serial/module.mk" in your GCC project Makefile.
-                KEIL: Drag the middleware/MTK/bt_notify folder to your project.
-                      Include the middleware/MTK/bt_notify/lib/libbtnotify_Keil.lib in your project. 
-                      Add middleware/bt_notify/inc and middleware/bt_notify/inc/dogp/ to include paths.
-                IAR: Drag the middleware/MTK/bt_notify folder to your project.
-                     Include the middleware/MTK/bt_notify/lib/libbtnotify_IAR.a in your project. 
-                     Add middleware/MTK/bt_notify/inc and middleware/MTK/bt_notify/inc/dogp to include paths.
-Dependency:     This module has the dependency with Bluetooth. Please also make sure to include Bluetooth.
-                MTK_BT_ENABLE,MTK_BT_SPP_ENABLE must set to 'y' in your project.
-Notice:         Get the APK in SDK packet in tools/smart_device and install it on Android Smartphone.
+Brief:          This module is the Battery Service (BAS) implementation. BAS exposes the Battery State and Battery Level to the peer device by a Bluetooth 
+                low-energy link. This module supports Battery Level notification to the peer device and manages Battery Level related read events from the 
+                peer device.
+Usage:          GCC: 1. Include the module with "include $(SOURCE_DIR)/middleware/MTK/ble_bas/module.mk" in the GCC project Makefile
+                KEIL: 1. Drag the middleware/MTK/ble_bas folder to the project.
+                      2. Add middleware/MTK/ble_bas/inc to include paths.
+                IAR: 1. Drag the middleware/MTK/ble_bas folder to the project.
+                     2. Add middleware/MTK/ble_bas/inc to include paths.
+Dependency:     This module depends on Bluetooth and Battery Management module. Please set MTK_BT_ENABLE and MTK_SMART_BATTERY_ENABLE to be "y" in feature.mk and
+                include Bluetooth module.mk and battery_management module.mk in your project.
+Notice:         None.
 Relative doc:   None.
-Example project:Please find the project under project folder bt_android_notification.
+Example project:project/mt2523_hdk/apps/bt_headset_23alpha/ble_bas_app.
+
 

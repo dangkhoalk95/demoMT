@@ -1,37 +1,3 @@
-/* Copyright Statement:
- *
- * (C) 2005-2016  MediaTek Inc. All rights reserved.
- *
- * This software/firmware and related documentation ("MediaTek Software") are
- * protected under relevant copyright laws. The information contained herein
- * is confidential and proprietary to MediaTek Inc. ("MediaTek") and/or its licensors.
- * Without the prior written permission of MediaTek and/or its licensors,
- * any reproduction, modification, use or disclosure of MediaTek Software,
- * and information contained herein, in whole or in part, shall be strictly prohibited.
- * You may only use, reproduce, modify, or distribute (as applicable) MediaTek Software
- * if you have agreed to and been bound by the applicable license agreement with
- * MediaTek ("License Agreement") and been granted explicit permission to do so within
- * the License Agreement ("Permitted User").  If you are not a Permitted User,
- * please cease any access or use of MediaTek Software immediately.
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT MEDIATEK SOFTWARE RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES
- * ARE PROVIDED TO RECEIVER ON AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL
- * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
- * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
- * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
- * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
- * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE MEDIATEK SOFTWARE AT ISSUE,
- * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- */
-
 #include "bt_uuid.h"
 #include "bt_system.h"
 #include "bt_gattc.h"
@@ -82,14 +48,11 @@ static const bt_gatts_service_t _bt_if_ble_fota_service = {
 #endif
 
 // from bt_notify middleware
-extern const bt_gatts_service_t bt_if_dogp_service;
+extern const bt_gatts_service_t ble_bas_service;
 
 //server collects all service
-static const bt_gatts_service_t * _bt_if_gatt_server[] = {
-    //&_bt_if_gap_service,//0x0001
-    //&_bt_if_gatt_service_ro,//0x0011
-    //&_bt_if_ble_fota_service, //0x0014-0x0017
-    &bt_if_dogp_service,//0x0020-0x0025
+static const bt_gatts_service_t * _bt_bas_server[] = {
+    &ble_bas_service,
     NULL
     };
 
@@ -100,6 +63,6 @@ static const bt_gatts_service_t * _bt_if_gatt_server[] = {
 //You have to return the DB(bt_gatts_service_t pointer) to gatts stack.
 const bt_gatts_service_t** bt_get_gatt_server()
 {
-    return _bt_if_gatt_server;
+    return _bt_bas_server;
 }
 

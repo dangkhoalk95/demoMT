@@ -14,12 +14,12 @@ FLOAT_TYPE = hard
 BUILD_DIR = $(PWD)/build
 
 # Project name
-PROJ_NAME       = $(notdir $(abspath $(dir $(PWD))))
+PROJ_NAME = $(notdir $(abspath $(dir $(PWD))))
 PROJ_PATH = $(abspath $(dir $(PWD)))/GCC
 OUTPATH = $(PWD)/build
 
 C_OBJS = $(C_FILES:%.c=$(BUILD_DIR)/%.o)
-CXX_OBJS        = $(CXX_FILES:%.cpp=$(BUILD_DIR)/%.o)
+CXX_OBJS = $(CXX_FILES:%.cpp=$(BUILD_DIR)/%.o)
 S_OBJS = $(S_FILES:%.s=$(BUILD_DIR)/%.o)
 
 # LD Flags
@@ -77,15 +77,15 @@ include $(SOURCE_DIR)/middleware/MTK/wifi_service/combo/module.mk
 include $(SOURCE_DIR)/middleware/MTK/connsys/module.mk
 
 # Main APP files
-APP_PATH        = $(patsubst $(SDK_PATH)/%,%,$(abspath $(dir $(PWD))))
+APP_PATH = $(patsubst $(SDK_PATH)/%,%,$(abspath $(dir $(PWD))))
 $(info $(SDK_PATH))
 $(info $(PROJ_PATH))
 $(info $(APP_PATH))
 APP_PATH_SRC = $(APP_PATH)/src
 
 APP_FILES += $(APP_PATH_SRC)/main.c
-APP_FILES += $(APP_PATH_SRC)/ept_gpio_var.c
-APP_FILES += $(APP_PATH_SRC)/ept_eint_var.c
+#APP_FILES += $(APP_PATH_SRC)/ept_gpio_var.c
+#APP_FILES += $(APP_PATH_SRC)/ept_eint_var.c
 APP_FILES += $(APP_PATH_SRC)/system_mt7687.c
 APP_FILES += $(APP_PATH_SRC)/sys_init.c
 APP_FILES += $(APP_PATH)/GCC/syscalls.c

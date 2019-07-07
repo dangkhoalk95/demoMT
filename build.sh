@@ -2,6 +2,8 @@
 
 ###############################################################################
 #Variables
+export CUR_DIR=$(dirname $0)
+cd $CUR_DIR
 export PROJECT_LIST=$(find project | grep "GCC/Makefile$")
 export BOARD_LIST="project/*"
 export OUT="$PWD/out"
