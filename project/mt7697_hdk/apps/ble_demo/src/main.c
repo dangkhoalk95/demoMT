@@ -32,6 +32,8 @@
 
 #include "nvdm.h"
 
+#include "BatteryManager.h"
+
 
 log_create_module(app, PRINT_LEVEL_INFO);
 
@@ -71,7 +73,7 @@ static void app_start_advertising(void){
 
     adv_data.advertising_data[7] = 1+strlen(APP_BLE_DEVICE_NAME);
     adv_data.advertising_data[8] = BT_GAP_LE_AD_TYPE_NAME_COMPLETE;
-    memcpy(adv_data.advertising_data+9, APP_BLE_DEVICE_NAME, strlen(APP_BLE_DEVICE_NAME));
+    memcpy(&adv_data.advertising_data[9], APP_BLE_DEVICE_NAME, strlen(APP_BLE_DEVICE_NAME));
 
     adv_data.advertising_data_length = 9 + strlen(APP_BLE_DEVICE_NAME);
 
@@ -136,7 +138,6 @@ bt_status_t app_bt_event_callback(bt_msg_type_t msg, bt_status_t status, void *b
 #define SERIAL_EXTCMD_UPDATE_BIN_SENDER           "myserial"
 #define SERIAL_EXTCMD_UPDATE_BIN_RECEIVER         "myserial"
 
-static bt_bd_addr_t g_remote_bt_addr;
 
 // static void app_btnotify_msg_hdlr(void *data){
 //     bt_notify_callback_data_t *p_data = (bt_notify_callback_data_t *)data;
@@ -212,11 +213,7 @@ static void app_btnotify_init(void){
     // bt_notify_init(0);
     // bt_notify_register_callback(NULL, SERIAL_EXTCMD_UPDATE_BIN_SENDER, app_btnotify_msg_hdlr);    
 
-    // log_config_print_switch(NOTIFY, DEBUG_LOG_OFF);
-    // log_config_print_switch(NOTIFY_SRV, DEBUG_LOG_OFF);
-    // log_config_print_switch(DOGP, DEBUG_LOG_OFF);
-    // log_config_print_switch(DOGP_ADP, DEBUG_LOG_OFF);
-    // log_config_print_switch(DOGP_CM, DEBUG_LOG_OFF);
+    log_config_print_switch(BLE_GATT, DEBUG_LOG_ON);
     
 }
 
@@ -257,12 +254,14 @@ int main(void){
     wifi_config_t config = {0};
     config.opmode = WIFI_MODE_STA_ONLY;
     wifi_init(&config, NULL);
-
-    lwip_tcpip_config_t tcpip_config = {{0}, {0}, {0}, {0}, {0}, {0}};
+            
+    lwip_tcpip_config_t tcpip_config = {0, {0}, {0}, {0}, {0}, {0}, {0}};
     lwip_tcpip_init(&tcpip_config, WIFI_MODE_STA_ONLY);
 
     bt_create_task();
     bt_common_init();
+
+    PWMng_StarTask();
 
     /* Start the scheduler. */
     vTaskStartScheduler();

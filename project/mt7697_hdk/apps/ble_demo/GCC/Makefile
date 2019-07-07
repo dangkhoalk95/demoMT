@@ -84,16 +84,15 @@ $(info $(APP_PATH))
 APP_PATH_SRC = $(APP_PATH)/src
 
 APP_FILES += $(APP_PATH_SRC)/main.c
-#APP_FILES += $(APP_PATH_SRC)/ept_gpio_var.c
-#APP_FILES += $(APP_PATH_SRC)/ept_eint_var.c
-APP_FILES += $(APP_PATH_SRC)/system_mt7687.c
-APP_FILES += $(APP_PATH_SRC)/sys_init.c
 APP_FILES += $(APP_PATH)/GCC/syscalls.c
-APP_FILES += $(APP_PATH_SRC)/regions_init.c
-APP_FILES += $(APP_PATH_SRC)/bt_hci_log_uart.c
-APP_FILES += $(APP_PATH_SRC)/bt_init.c
-APP_FILES += $(APP_PATH_SRC)/bt_common.c
-APP_FILES += $(APP_PATH_SRC)/gatt_service.c
+APP_FILES += $(APP_PATH_SRC)/System/system_mt7687.c
+APP_FILES += $(APP_PATH_SRC)/System/sys_init.c
+APP_FILES += $(APP_PATH_SRC)/System/regions_init.c
+APP_FILES += $(APP_PATH_SRC)/BLE/bt_hci_log_uart.c
+APP_FILES += $(APP_PATH_SRC)/BLE/bt_init.c
+APP_FILES += $(APP_PATH_SRC)/BLE/bt_common.c
+APP_FILES += $(APP_PATH_SRC)/BLE/gatt_service.c
+APP_FILES += $(APP_PATH_SRC)/TaskManager/BatteryManager.c
 
 C_FILES += $(APP_FILES)
 
@@ -101,7 +100,7 @@ C_FILES += $(APP_FILES)
 S_FILES += $(APP_PATH)/GCC/startup_mt7687.s
 
 
-CFLAGS += -DMTK_FW_VERSION=\"$(MTK_FW_VERSION)\"
+# CFLAGS += -DMTK_FW_VERSION=\"$(MTK_FW_VERSION)\"
 # include path
 CFLAGS += -I$(SOURCE_DIR)/driver/chip/mt7687/inc
 CFLAGS += -I$(SOURCE_DIR)/driver/chip/inc
@@ -109,6 +108,7 @@ CFLAGS += -I$(SOURCE_DIR)/$(APP_PATH)/inc
 CFLAGS += -I$(SOURCE_DIR)/driver/CMSIS/Include
 CFLAGS += -I$(SOURCE_DIR)/driver/CMSIS/Device/MTK/mt7687/Include
 CFLAGS += -I$(SOURCE_DIR)/driver/board/mt76x7_hdk/ept/inc
+CFLAGS += -I$(SOURCE_DIR)/$(APP_PATH)/inc/TaskManager/
 
 # BLE include path
 CFLAGS += -D__BT_DEBUG__

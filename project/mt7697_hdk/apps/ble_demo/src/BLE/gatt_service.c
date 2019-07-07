@@ -1,10 +1,23 @@
+#include <string.h>
+
 #include "bt_uuid.h"
 #include "bt_system.h"
 #include "bt_gattc.h"
 #include "bt_gatt.h"
 #include "bt_gatts.h"
-#include <string.h>
+#include "bt_debug.h"
+
 #include "project_config.h"
+#include "syslog.h"
+
+#include "ble_serial.h"
+
+
+/* Create the log control block as user wishes. Here we use 'BLE_GATT' as module name.
+ * User needs to define their own log control blocks as project needs.
+ * Please refer to the log dev guide under /doc folder for more details.
+ */
+log_create_module(BLE_GATT, PRINT_LEVEL_INFO);
 
 //Declare every record here
 //service collects all bt_gatts_service_rec_t
@@ -56,8 +69,14 @@ static const bt_gatts_service_t * _bt_bas_server[] = {
     NULL
     };
 
-
-
+uint8_t ble_bas_read_callback(ble_bas_event_t event, bt_handle_t conn_handle){
+    uint8_t ret = 0;
+    LOG_I(BLE_GATT, "ble_bas_read_callback, event:%d, conn_handle:%d \r\n", event, conn_handle);
+    return ret;
+}
+void ble_bas_write_callback(ble_bas_event_t event, bt_handle_t conn_handle, void *data){
+    LOG_I(BLE_GATT, "ble_bas_write_callback, event:%d, conn_handle:%d \r\n", event, conn_handle);
+};
 
 //When GATTS get req from remote client, GATTS will call bt_get_gatt_server() to get application's gatt service DB.
 //You have to return the DB(bt_gatts_service_t pointer) to gatts stack.

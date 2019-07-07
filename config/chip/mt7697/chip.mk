@@ -17,7 +17,7 @@ MTK_SUPPORT_HEAP_DEBUG                      ?= n
 MTK_HEAP_SIZE_GUARD_ENABLE                  ?= n
 MTK_MPERF_ENABLE                            ?= n
 MTK_FW_DW_BY_CM4                            ?= n
-MTK_FLASH_DIRECT_DL  						?= y
+MTK_FLASH_DIRECT_DL  						            ?= y
 MTK_PATCH_DL_ENABLE                         ?= y
 MTK_ANT_DIV_ENABLE                          ?= n
 
