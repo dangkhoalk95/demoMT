@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "${env:PRJ_DIR}/build.sh",
+            "args": [
+                "mt7697_hdk",
+                "ble_demo",
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "command": "rm",
+            "args": [
+                "${env:OUT_DIR}/mt7697_hdk",
+                "-rf"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "logcat",
+            "command": "cat",
+            "args": [
+                "${env:OUT_DIR}/mt7697_hdk/ble_demo/log/err.log"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}

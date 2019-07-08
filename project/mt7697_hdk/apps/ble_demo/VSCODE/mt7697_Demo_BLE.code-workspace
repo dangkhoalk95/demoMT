@@ -4,64 +4,77 @@
 	},
 	"folders": [
 		{
-			"name": "01_Enviroment",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/01_Enviroment"
+			"name": "Build/Enviroment",
+			"path": "/media/ssd/03_github/LinkitSDK/project/mt7697_hdk/apps/ble_demo/VSCODE"
+		},
+{
+			"name": "Application/BLEDemo",
+			"path": "${env:PRJ_DIR}/project/mt7697_hdk/apps/ble_demo"
 		},
 		{
-			"name": "ble_demo",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/project/mt7697_hdk/apps/ble_demo"
+			"name": "Board/ept",
+			"path": "/media/ssd/03_github/LinkitSDK/driver/board/mt76x7_hdk/ept"
 		},
 		{
-			"name": "ept",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/driver/board/mt76x7_hdk/ept"
+			"name": "Middleware/FreeRTOS",
+			"path": "/media/ssd/03_github/LinkitSDK/kernel/rtos/FreeRTOS"
 		},
 		{
-			"name": "FreeRTOS",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/kernel/rtos/FreeRTOS"
+			"name": "Middleware/service",
+			"path": "/media/ssd/03_github/LinkitSDK/kernel/service"
 		},
 		{
-			"name": "service",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/kernel/service"
+			"name": "Middleware/3rd/lwip",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/third_party/lwip"
 		},
 		{
-			"name": "mt7687",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/driver/chip/mt7687"
+			"name": "Middleware/MTK/nvdm",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/nvdm"
+		},
+
+		{
+			"name": "Middleware/MTK/dhcpd",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/dhcpd"
 		},
 		{
-			"name": "nvdm",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/nvdm"
+			"name": "Middleware/MTK/wifi_service",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/wifi_service/combo"
 		},
 		{
-			"name": "lwip",
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/third_party/lwip"
+			"name": "Middleware/MTK/connsys",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/connsys"
+		},
+
+		{
+			"name": "Middleware/MTK/bluetooth",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/bluetooth"
+		},
+
+		{
+			"name": "Middleware/MTK/bt_callback_manager",
+			"path": "/media/ssd/03_github/LinkitSDK/middleware/MTK/bt_callback_manager"
 		},
 		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/dhcpd"
+			"name": "Vendor/DKBD/ble_serial",
+			"path": "/media/ssd/03_github/LinkitSDK/vendor/DKBD/ble_serial"
 		},
 		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/wifi_service/combo"
+			"name": "Config/Chip",
+			"path": "/media/ssd/03_github/LinkitSDK/config/chip/mt7697"
 		},
 		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/connsys"
+			"name": "Config/Board",
+			"path": "/media/ssd/03_github/LinkitSDK/config/board/mt7697_hdk"
+		},
+
+		{
+			"name": "Common/bsp_ex",
+			"path": "/media/ssd/03_github/LinkitSDK/project/common/bsp_ex"
 		},
 		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/project/common/bsp_ex"
+			"name": "Chip/mt7697",
+			"path": "/media/ssd/03_github/LinkitSDK/driver/chip/mt7687"
 		},
-		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/bluetooth"
-		},
-		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/vendor/DKBD/ble_serial"
-		},
-		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/middleware/MTK/bt_callback_manager"
-		},
-		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/config/chip/mt7697"
-		},
-		{
-			"path": "/home/khoa/Private/00_Project/LinkitSDK/config/board/mt7697_hdk"
-		}
 	],
 	"settings": {
 		"C_Cpp.default.includePath": [   
@@ -131,11 +144,10 @@
 
 			"PRODUCT_VERSION=7697",
 			"DRV_BOARD_CONFIG=mt76x7_hdk",
-			""
-
 		],
 		"files.associations": {
 			"exception_handler.h": "c"
 		}
 	}
 }
+
